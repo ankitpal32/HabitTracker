@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import { FiZap, FiCheckCircle, FiBarChart2 } from "react-icons/fi";
 
 function Progress() {
@@ -7,36 +7,14 @@ function Progress() {
   const [range, setRange] = useState(7);
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem("token");
-
   /* Get habits */
   const getHabits = async () => {
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
     try {
       setLoading(true);
-
-      const response = await axios.get(
-        "http://localhost:3000/api/habits",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
       console.log("Error loading progress:", error);
-
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-      }
     } finally {
       setLoading(false);
     }
@@ -44,7 +22,6 @@ function Progress() {
 
   useEffect(() => {
     getHabits();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Basic progress values */
@@ -112,10 +89,10 @@ function Progress() {
 
     const label =
       range === 7
-        ? date.toLocaleDateString("en-IN", {
+        ? date.toLocaleDateString("en-US", {
             weekday: "short"
           })
-        : date.toLocaleDateString("en-IN", {
+        : date.toLocaleDateString("en-US", {
             day: "numeric"
           });
 
@@ -144,9 +121,14 @@ function Progress() {
       (date) => completedDates.includes(date)
     ).length;
 
-    return Math.round(
-      (completedCount / range) * 100
-    );
+    const isWeekly = habit.frequency && habit.frequency.toLowerCase() === "weekly";
+    const expectedCompletions = isWeekly
+      ? Math.max(1, Math.round(range / 7))
+      : range;
+
+    return Math.min(100, Math.round(
+      (completedCount / expectedCompletions) * 100
+    ));
   };
 
   if (loading) {

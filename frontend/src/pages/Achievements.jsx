@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import {
   FiPlusCircle,
   FiCheckSquare,
@@ -14,22 +14,11 @@ function Achievements() {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem("token");
-
   /* Get habits */
   const getHabits = async () => {
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
     try {
-      const response = await axios.get("http://localhost:3000/api/habits", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      setLoading(true);
+      const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
       console.log("Error loading achievements:", error);
@@ -40,7 +29,6 @@ function Achievements() {
 
   useEffect(() => {
     getHabits();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Calculate stats */

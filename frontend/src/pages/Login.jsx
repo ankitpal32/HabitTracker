@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
 import { FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle, FiArrowLeft } from "react-icons/fi";
 import logo from "../images/logo.png";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,23 +27,21 @@ function Login() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        {
-          email: email.trim(),
-          password
-        }
-      );
+      const response = await api.post("/auth/login", {
+        email: email.trim(),
+        password
+      });
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      window.dispatchEvent(new Event("userUpdated"));
 
       setSuccess("Login successful! Redirecting...");
 
       /* Redirect to dashboard */
       setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 800);
+        navigate("/dashboard");
+      }, 500);
 
     } catch (err) {
       console.log(err);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import {
   FiLayers,
   FiCheckCircle,
@@ -14,10 +14,16 @@ function Profile() {
   const [showEdit, setShowEdit] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
 
-  const [name, setName] = useState(() => user?.name || "");
-  const [email, setEmail] = useState(() => user?.email || "");
+  const [name, setName] = useState(() => currentUser?.name || "");
+  const [email, setEmail] = useState(() => currentUser?.email || "");
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -36,40 +42,18 @@ function Profile() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
-  const token = localStorage.getItem("token");
-
   /* Get habits */
   const getHabits = async () => {
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/habits",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
       console.log("Error loading profile habits:", error);
-
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-      }
     }
   };
 
   useEffect(() => {
     getHabits();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const totalCompleted = habits.reduce(
@@ -106,7 +90,7 @@ function Profile() {
     reader.onloadend = () => {
       localStorage.setItem("profileImage", reader.result);
       setAvatar(reader.result);
-      window.location.reload();
+      window.dispatchEvent(new Event("userUpdated"));
     };
 
     reader.readAsDataURL(file);
@@ -130,26 +114,19 @@ function Profile() {
     try {
       setLoading(true);
 
-      const response = await axios.put(
-        "http://localhost:3000/api/auth/profile",
-        {
-          name: name.trim(),
-          email: email.trim()
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await api.put("/auth/profile", {
+        name: name.trim(),
+        email: email.trim()
+      });
 
       localStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );
+      setCurrentUser(response.data.user);
+      window.dispatchEvent(new Event("userUpdated"));
 
       setShowEdit(false);
-      window.location.reload();
     } catch (error) {
       console.log("Error updating profile:", error);
 
@@ -190,18 +167,10 @@ function Profile() {
     try {
       setLoading(true);
 
-      await axios.put(
-        "http://localhost:3000/api/auth/password",
-        {
-          currentPassword,
-          newPassword
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      await api.put("/auth/password", {
+        currentPassword,
+        newPassword
+      });
 
       setPasswordSuccess("Password updated successfully.");
       setCurrentPassword("");
@@ -241,7 +210,7 @@ function Profile() {
               {avatar ? (
                 <img src={avatar} alt="Profile" />
               ) : (
-                user?.name?.charAt(0).toUpperCase() || "U"
+                currentUser?.name?.charAt(0).toUpperCase() || "U"
               )}
             </div>
             <label className="avatar-edit-button" title="Change photo">
@@ -252,15 +221,15 @@ function Profile() {
         </div>
 
         <div className="profile-user-info">
-          <h2>{user?.name || "User"}</h2>
-          <p>{user?.email || "No email available"}</p>
+          <h2>{currentUser?.name || "User"}</h2>
+          <p>{currentUser?.email || "No email available"}</p>
 
           <div className="profile-actions">
             <button
               className="add-button"
               onClick={() => {
-                setName(user?.name || "");
-                setEmail(user?.email || "");
+                setName(currentUser?.name || "");
+                setEmail(currentUser?.email || "");
                 setShowEdit(true);
               }}
             >
@@ -316,12 +285,12 @@ function Profile() {
 
         <div className="profile-row">
           <span>Name</span>
-          <strong>{user?.name || "User"}</strong>
+          <strong>{currentUser?.name || "User"}</strong>
         </div>
 
         <div className="profile-row">
           <span>Email</span>
-          <strong>{user?.email || "Not available"}</strong>
+          <strong>{currentUser?.email || "Not available"}</strong>
         </div>
       </section>
 

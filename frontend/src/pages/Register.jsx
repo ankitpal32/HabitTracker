@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api";
 import { FiEye, FiEyeOff, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
 import logo from "../images/logo.png";
 
 function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,14 +57,11 @@ function Register() {
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
-        {
-          name: name.trim(),
-          email: email.trim(),
-          password
-        }
-      );
+      const response = await api.post("/auth/register", {
+        name: name.trim(),
+        email: email.trim(),
+        password
+      });
 
       setSuccess(
         response.data.message ||
@@ -77,8 +75,8 @@ function Register() {
 
       /* Redirect to login */
       setTimeout(() => {
-        window.location.href = "/login";
-      }, 1200);
+        navigate("/login");
+      }, 1000);
 
     } catch (err) {
       console.log("Registration error:", err);

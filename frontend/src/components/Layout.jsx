@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiHome,
@@ -19,8 +19,30 @@ function Layout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const avatar = localStorage.getItem("profileImage") || "";
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
+  const [avatar, setAvatar] = useState(
+    () => localStorage.getItem("profileImage") || ""
+  );
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      try {
+        setUser(JSON.parse(localStorage.getItem("user")) || null);
+      } catch {
+        setUser(null);
+      }
+      setAvatar(localStorage.getItem("profileImage") || "");
+    };
+
+    window.addEventListener("userUpdated", handleUserUpdate);
+    return () => window.removeEventListener("userUpdated", handleUserUpdate);
+  }, []);
 
   /* Determine topbar context */
   const getContextName = () => {

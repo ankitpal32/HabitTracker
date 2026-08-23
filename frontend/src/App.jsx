@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   useEffect(() => {
@@ -36,54 +37,66 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <Layout>
-              <Dashboard />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Dashboard />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/progress"
           element={
-            <Layout>
-              <Progress />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Progress />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/history"
           element={
-            <Layout>
-              <History />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <History />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/achievements"
           element={
-            <Layout>
-              <Achievements />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Achievements />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/profile"
           element={
-            <Layout>
-              <Profile />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Profile />
+              </Layout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/settings"
           element={
-            <Layout>
-              <Settings />
-            </Layout>
+            <ProtectedRoute>
+              <Layout>
+                <Settings />
+              </Layout>
+            </ProtectedRoute>
           }
         />
       </Routes>

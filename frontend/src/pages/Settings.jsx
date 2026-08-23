@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FiClock, FiTrash2, FiBell, FiLogOut } from "react-icons/fi";
 
 function Settings() {
+  const navigate = useNavigate();
   const [defaultFrequency, setDefaultFrequency] = useState(
     localStorage.getItem("defaultFrequency") || "Daily"
   );
@@ -64,7 +66,8 @@ function Settings() {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/login";
+    window.dispatchEvent(new Event("userUpdated"));
+    navigate("/login");
   };
 
   return (

@@ -13,7 +13,15 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters"
+      });
+    }
+
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(400).json({
@@ -24,8 +32,8 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
-      email,
+      name: name.trim(),
+      email: normalizedEmail,
       password: hashedPassword
     });
 
@@ -39,7 +47,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Registration failed"
     });
   }
 };
@@ -55,7 +63,8 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       return res.status(400).json({
@@ -92,7 +101,32 @@ const loginUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Login failed"
+    });
+  }
+};
+
+/* Get current user profile */
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message || "Failed to fetch user profile"
     });
   }
 };
@@ -108,8 +142,10 @@ const updateProfile = async (req, res) => {
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+
     const existingUser = await User.findOne({
-      email,
+      email: normalizedEmail,
       _id: { $ne: req.userId }
     });
 
@@ -123,7 +159,7 @@ const updateProfile = async (req, res) => {
       req.userId,
       {
         name: name.trim(),
-        email: email.trim()
+        email: normalizedEmail
       },
       {
         returnDocument: "after",
@@ -147,7 +183,7 @@ const updateProfile = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Failed to update profile"
     });
   }
 };
@@ -193,7 +229,7 @@ const changePassword = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Failed to change password"
     });
   }
 };
@@ -201,6 +237,7 @@ const changePassword = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getMe,
   updateProfile,
   changePassword
 };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import {
   FiCheckSquare,
   FiActivity,
@@ -31,36 +31,14 @@ function History() {
     return <FiCompass />;
   };
 
-  const token = localStorage.getItem("token");
-
   /* Get habits */
   const getHabits = async () => {
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
     try {
       setLoading(true);
-
-      const response = await axios.get(
-        "http://localhost:3000/api/habits",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
       console.log("Error loading history:", error);
-
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-      }
     } finally {
       setLoading(false);
     }
@@ -68,7 +46,6 @@ function History() {
 
   useEffect(() => {
     getHabits();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Build history */
@@ -113,7 +90,7 @@ function History() {
       `${dateString}T00:00:00`
     );
 
-    return date.toLocaleDateString("en-IN", {
+    return date.toLocaleDateString("en-US", {
       day: "numeric",
       month: "long",
       year: "numeric"

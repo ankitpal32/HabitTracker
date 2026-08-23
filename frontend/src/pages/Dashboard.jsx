@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import {
   FiPlus,
   FiZap,
@@ -29,40 +29,19 @@ function Dashboard() {
   const [formError, setFormError] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const token = localStorage.getItem("token");
 
   /* Get habits */
   const getHabits = async () => {
-    if (!token) {
-      window.location.href = "/login";
-      return;
-    }
-
     try {
-      const response = await axios.get(
-        "http://localhost:3000/api/habits",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
       console.log("Error getting habits:", error);
-
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-      }
     }
   };
 
   useEffect(() => {
     getHabits();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* Add or update habit */
@@ -83,14 +62,9 @@ function Dashboard() {
 
     try {
       if (editingId) {
-        const response = await axios.put(
-          `http://localhost:3000/api/habits/${editingId}`,
-          habitData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+        const response = await api.put(
+          `/habits/${editingId}`,
+          habitData
         );
 
         setHabits((currentHabits) =>
@@ -101,14 +75,9 @@ function Dashboard() {
           )
         );
       } else {
-        const response = await axios.post(
-          "http://localhost:3000/api/habits",
-          habitData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+        const response = await api.post(
+          "/habits",
+          habitData
         );
 
         setHabits((currentHabits) => [
@@ -142,15 +111,7 @@ function Dashboard() {
   /* Complete habit */
   const completeHabit = async (id) => {
     try {
-      const response = await axios.put(
-        `http://localhost:3000/api/habits/${id}/complete`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await api.put(`/habits/${id}/complete`);
 
       setHabits((currentHabits) =>
         currentHabits.map((habit) =>
@@ -187,14 +148,7 @@ function Dashboard() {
     }
 
     try {
-      await axios.delete(
-        `http://localhost:3000/api/habits/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      await api.delete(`/habits/${id}`);
 
       setHabits((currentHabits) =>
         currentHabits.filter(

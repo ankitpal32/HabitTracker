@@ -1,20 +1,26 @@
+const mongoose = require("mongoose");
 const Habit = require("../models/Habit");
 
-// Get all habits
+// Helper to validate Mongo ObjectId
+const isValidObjectId = (id) => mongoose.Types.ObjectId.isValid(id);
+
+// Get all habits for authenticated user
 const getHabits = async (req, res) => {
   try {
     const habits = await Habit.find({
       userId: req.userId
-    });
+    }).sort({ createdAt: -1 });
 
     const today = new Date().toISOString().split("T")[0];
     const yesterdayObj = new Date();
     yesterdayObj.setDate(yesterdayObj.getDate() - 1);
     const yesterday = yesterdayObj.toISOString().split("T")[0];
 
+    // Check day transitions and update streak/today states if needed
     for (const habit of habits) {
       let changed = false;
 
+      // Reset completedToday if last completion was not today
       if (
         habit.completedToday &&
         habit.lastCompletedDate !== today
@@ -23,7 +29,9 @@ const getHabits = async (req, res) => {
         changed = true;
       }
 
+      // Reset streak to 0 if a day was missed for daily habits
       if (
+        habit.frequency === "Daily" &&
         habit.lastCompletedDate &&
         habit.lastCompletedDate !== today &&
         habit.lastCompletedDate !== yesterday
@@ -41,19 +49,25 @@ const getHabits = async (req, res) => {
 
     const updatedHabits = await Habit.find({
       userId: req.userId
-    });
+    }).sort({ createdAt: -1 });
 
     res.json(updatedHabits);
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Failed to fetch habits"
     });
   }
 };
 
-// Get one habit
+// Get one habit by ID (user isolated)
 const getHabitById = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid habit ID format"
+      });
+    }
+
     const habit = await Habit.findOne({
       _id: req.params.id,
       userId: req.userId
@@ -68,7 +82,7 @@ const getHabitById = async (req, res) => {
     res.json(habit);
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Failed to fetch habit"
     });
   }
 };
@@ -76,15 +90,26 @@ const getHabitById = async (req, res) => {
 // Create habit
 const createHabit = async (req, res) => {
   try {
+    const { name, frequency, streak, completedToday } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({
+        message: "Habit name is required"
+      });
+    }
+
     const habit = await Habit.create({
-      ...req.body,
+      name: name.trim(),
+      frequency: frequency ? frequency.trim() : "Daily",
+      streak: typeof streak === "number" ? streak : 0,
+      completedToday: Boolean(completedToday),
       userId: req.userId
     });
 
     res.status(201).json(habit);
   } catch (error) {
     res.status(400).json({
-      message: error.message
+      message: error.message || "Failed to create habit"
     });
   }
 };
@@ -92,12 +117,33 @@ const createHabit = async (req, res) => {
 // Update habit
 const updateHabit = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid habit ID format"
+      });
+    }
+
+    const { name, frequency, streak, completedToday, lastCompletedDate, completedDates } = req.body;
+    const updateData = {};
+
+    if (name !== undefined) {
+      if (!name || !name.trim()) {
+        return res.status(400).json({ message: "Habit name cannot be empty" });
+      }
+      updateData.name = name.trim();
+    }
+    if (frequency !== undefined) updateData.frequency = frequency.trim();
+    if (streak !== undefined) updateData.streak = Number(streak) || 0;
+    if (completedToday !== undefined) updateData.completedToday = Boolean(completedToday);
+    if (lastCompletedDate !== undefined) updateData.lastCompletedDate = lastCompletedDate;
+    if (completedDates !== undefined && Array.isArray(completedDates)) updateData.completedDates = completedDates;
+
     const habit = await Habit.findOneAndUpdate(
       {
         _id: req.params.id,
         userId: req.userId
       },
-      req.body,
+      updateData,
       {
         returnDocument: "after",
         runValidators: true
@@ -113,7 +159,7 @@ const updateHabit = async (req, res) => {
     res.json(habit);
   } catch (error) {
     res.status(400).json({
-      message: error.message
+      message: error.message || "Failed to update habit"
     });
   }
 };
@@ -121,6 +167,12 @@ const updateHabit = async (req, res) => {
 // Delete habit
 const deleteHabit = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid habit ID format"
+      });
+    }
+
     const habit = await Habit.findOneAndDelete({
       _id: req.params.id,
       userId: req.userId
@@ -137,13 +189,20 @@ const deleteHabit = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Failed to delete habit"
     });
   }
 };
 
+// Complete habit (updates streak and date history)
 const completeHabit = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid habit ID format"
+      });
+    }
+
     const habit = await Habit.findOne({
       _id: req.params.id,
       userId: req.userId
@@ -187,7 +246,7 @@ const completeHabit = async (req, res) => {
     res.json(habit);
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message || "Failed to complete habit"
     });
   }
 };
