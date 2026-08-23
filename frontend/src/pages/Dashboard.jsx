@@ -1,42 +1,30 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import {
-  FiPlus,
-  FiZap,
-  FiLayers,
-  FiCheckCircle,
-  FiActivity,
-  FiBookOpen,
-  FiBriefcase,
-  FiCompass
-} from "react-icons/fi";
+import { FiPlus, FiZap, FiLayers, FiCheckCircle } from "react-icons/fi";
+import { getHabitIcon } from "../utils/habitIcons";
 
 function Dashboard() {
   const [habits, setHabits] = useState([]);
-
   const [name, setName] = useState("");
   const [frequency, setFrequency] = useState(
     localStorage.getItem("defaultFrequency") || "Daily"
   );
   const [streak, setStreak] = useState(0);
   const [completedToday, setCompletedToday] = useState(false);
-
   const [editingId, setEditingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
-
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [formError, setFormError] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  /* Get habits */
   const getHabits = async () => {
     try {
       const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
-      console.log("Error getting habits:", error);
+      console.error("Error loading habits:", error);
     }
   };
 
@@ -44,11 +32,10 @@ function Dashboard() {
     getHabits();
   }, []);
 
-  /* Add or update habit */
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (name.trim() === "") {
+    if (!name.trim()) {
       setFormError("Please enter a habit name.");
       return;
     }
@@ -62,115 +49,62 @@ function Dashboard() {
 
     try {
       if (editingId) {
-        const response = await api.put(
-          `/habits/${editingId}`,
-          habitData
-        );
-
-        setHabits((currentHabits) =>
-          currentHabits.map((habit) =>
-            habit._id === editingId
-              ? response.data
-              : habit
-          )
+        const response = await api.put(`/habits/${editingId}`, habitData);
+        setHabits((prev) =>
+          prev.map((habit) => (habit._id === editingId ? response.data : habit))
         );
       } else {
-        const response = await api.post(
-          "/habits",
-          habitData
-        );
-
-        setHabits((currentHabits) => [
-          ...currentHabits,
-          response.data
-        ]);
+        const response = await api.post("/habits", habitData);
+        setHabits((prev) => [...prev, response.data]);
       }
-
       clearForm();
     } catch (error) {
-      console.log("Error saving habit:", error);
-
+      console.error("Error saving habit:", error);
       setFormError(
-        error.response?.data?.message ||
-          "Something went wrong while saving the habit."
+        error.response?.data?.message || "Something went wrong while saving the habit."
       );
     }
   };
 
-  /* Open edit form */
   const editHabit = (habit) => {
     setName(habit.name || "");
     setFrequency(habit.frequency || "Daily");
     setStreak(habit.streak || 0);
     setCompletedToday(Boolean(habit.completedToday));
-
     setEditingId(habit._id);
     setShowForm(true);
   };
 
-  /* Complete habit */
   const completeHabit = async (id) => {
     try {
       const response = await api.put(`/habits/${id}/complete`);
-
-      setHabits((currentHabits) =>
-        currentHabits.map((habit) =>
-          habit._id === id
-            ? response.data
-            : habit
-        )
+      setHabits((prev) =>
+        prev.map((habit) => (habit._id === id ? response.data : habit))
       );
     } catch (error) {
-      console.log("Error completing habit:", error);
-
-      alert(
-        error.response?.data?.message ||
-          "Could not complete the habit."
-      );
+      console.error("Error completing habit:", error);
+      alert(error.response?.data?.message || "Could not complete the habit.");
     }
   };
 
-  /* Delete habit */
   const deleteHabit = async (id) => {
-    const confirmDeleteSetting =
-      localStorage.getItem("confirmDelete") !== "false";
-
-    let shouldDelete = true;
-
-    if (confirmDeleteSetting) {
-      shouldDelete = window.confirm(
-        "Are you sure you want to delete this habit?"
-      );
-    }
-
-    if (!shouldDelete) {
+    const confirmDelete = localStorage.getItem("confirmDelete") !== "false";
+    if (confirmDelete && !window.confirm("Are you sure you want to delete this habit?")) {
       return;
     }
 
     try {
       await api.delete(`/habits/${id}`);
-
-      setHabits((currentHabits) =>
-        currentHabits.filter(
-          (habit) => habit._id !== id
-        )
-      );
+      setHabits((prev) => prev.filter((habit) => habit._id !== id));
     } catch (error) {
-      console.log("Error deleting habit:", error);
-
-      alert(
-        error.response?.data?.message ||
-          "Could not delete the habit."
-      );
+      console.error("Error deleting habit:", error);
+      alert(error.response?.data?.message || "Could not delete the habit.");
     }
   };
 
-  /* Reset form */
   const clearForm = () => {
     setName("");
-    setFrequency(
-      localStorage.getItem("defaultFrequency") || "Daily"
-    );
+    setFrequency(localStorage.getItem("defaultFrequency") || "Daily");
     setStreak(0);
     setCompletedToday(false);
     setEditingId(null);
@@ -178,28 +112,10 @@ function Dashboard() {
     setShowForm(false);
   };
 
-  /* Calculate dashboard values */
-  const completedCount = habits.filter(
-    (habit) => habit.completedToday
-  ).length;
+  const completedCount = habits.filter((habit) => habit.completedToday).length;
+  const progress = habits.length === 0 ? 0 : Math.round((completedCount / habits.length) * 100);
+  const bestStreak = habits.length === 0 ? 0 : Math.max(...habits.map((h) => Number(h.streak) || 0));
 
-  const progress =
-    habits.length === 0
-      ? 0
-      : Math.round(
-          (completedCount / habits.length) * 100
-        );
-
-  const bestStreak =
-    habits.length === 0
-      ? 0
-      : Math.max(
-          ...habits.map(
-            (habit) => Number(habit.streak) || 0
-          )
-        );
-
-  /* Get last 7 days of completion */
   const getLast7DaysCompletion = () => {
     const days = [];
     for (let i = 6; i >= 0; i--) {
@@ -207,11 +123,10 @@ function Dashboard() {
       date.setDate(date.getDate() - i);
       const dateString = date.toISOString().split("T")[0];
       const dayLabel = date.toLocaleDateString("en-US", { weekday: "short" }).charAt(0);
-      
-      const dayCompletedCount = habits.filter(habit => habit.completedDates?.includes(dateString)).length;
+      const dayCompletedCount = habits.filter((h) => h.completedDates?.includes(dateString)).length;
       const total = habits.length;
       const pct = total > 0 ? (dayCompletedCount / total) * 100 : 0;
-      
+
       days.push({
         dayLabel,
         dateString,
@@ -225,75 +140,38 @@ function Dashboard() {
 
   const weeklyActivity = getLast7DaysCompletion();
 
-  /* Return custom icon based on habit name */
-  const getHabitIcon = (habitName) => {
-    const nameLower = habitName.toLowerCase();
-    if (nameLower.includes("code") || nameLower.includes("program") || nameLower.includes("dev")) {
-      return <FiActivity />;
-    }
-    if (nameLower.includes("read") || nameLower.includes("book")) {
-      return <FiBookOpen />;
-    }
-    if (nameLower.includes("work") || nameLower.includes("study") || nameLower.includes("office") || nameLower.includes("task")) {
-      return <FiBriefcase />;
-    }
-    return <FiCompass />;
-  };
-
-  /* Search and filter */
   const filteredHabits = habits.filter((habit) => {
-    const matchesSearch = habit.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
+    const matchesSearch = habit.name.toLowerCase().includes(search.toLowerCase());
     const matchesFilter =
       filter === "All" ||
-      (filter === "Completed" &&
-        habit.completedToday === true) ||
-      (filter === "Pending" &&
-        habit.completedToday === false) ||
+      (filter === "Completed" && habit.completedToday === true) ||
+      (filter === "Pending" && habit.completedToday === false) ||
       filter === habit.frequency;
 
     return matchesSearch && matchesFilter;
   });
 
-  /* Greeting */
   const getGreeting = () => {
     const hour = new Date().getHours();
-
-    if (hour < 12) {
-      return "Good morning";
-    }
-
-    if (hour < 18) {
-      return "Good afternoon";
-    }
-
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
     return "Good evening";
   };
 
-  /* Get formatted current date */
-  const getCurrentDateString = () => {
-    return new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    });
-  };
+  const currentDateString = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
 
   return (
     <div className="dashboard-page">
-
       <div className="dashboard-heading">
         <div>
           <p className="page-label">OVERVIEW</p>
-          <h1>
-            {getGreeting()}, {user?.name || "User"}
-          </h1>
-          <p className="current-date-subtitle">
-            {getCurrentDateString()}
-          </p>
+          <h1>{getGreeting()}, {user?.name || "User"}</h1>
+          <p className="current-date-subtitle">{currentDateString}</p>
         </div>
 
         <button
@@ -314,27 +192,17 @@ function Dashboard() {
             <span>Total Habits</span>
             <span className="stat-icon"><FiLayers /></span>
           </div>
-          <strong className="stat-number">
-            {habits.length}
-          </strong>
-          <span className="stat-description">
-            Habits you are tracking
-          </span>
+          <strong className="stat-number">{habits.length}</strong>
+          <span className="stat-description">Habits you are tracking</span>
         </div>
 
         <div className="stat-card">
           <div className="stat-card-top">
             <span>Completed Today</span>
-            <span className="stat-icon green">
-              <FiCheckCircle />
-            </span>
+            <span className="stat-icon green"><FiCheckCircle /></span>
           </div>
-          <strong className="stat-number">
-            {completedCount}
-          </strong>
-          <span className="stat-description">
-            Out of {habits.length} habits
-          </span>
+          <strong className="stat-number">{completedCount}</strong>
+          <span className="stat-description">Out of {habits.length} habits</span>
         </div>
 
         <div className="stat-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -342,12 +210,8 @@ function Dashboard() {
             <div className="stat-card-top" style={{ marginBottom: 6 }}>
               <span>Today's Progress</span>
             </div>
-            <strong className="stat-number" style={{ margin: 0 }}>
-              {progress}%
-            </strong>
-            <span className="stat-description">
-              Completion rate
-            </span>
+            <strong className="stat-number" style={{ margin: 0 }}>{progress}%</strong>
+            <span className="stat-description">Completion rate</span>
           </div>
           <div className="circular-progress-wrap" style={{ position: "relative", width: 55, height: 55 }}>
             <svg width="55" height="55" style={{ transform: "rotate(-90deg)" }}>
@@ -381,20 +245,13 @@ function Dashboard() {
         <div className="stat-card">
           <div className="stat-card-top">
             <span>Best Streak</span>
-            <span className="stat-icon orange">
-              <FiZap />
-            </span>
+            <span className="stat-icon orange"><FiZap /></span>
           </div>
-          <strong className="stat-number">
-            {bestStreak}
-          </strong>
-          <span className="stat-description">
-            Days at your best
-          </span>
+          <strong className="stat-number">{bestStreak}</strong>
+          <span className="stat-description">Days at your best</span>
         </div>
       </section>
 
-      {/* Weekly consistency full width card */}
       {habits.length > 0 && (
         <section className="weekly-consistency-section">
           <div className="weekly-consistency-card">
@@ -405,18 +262,11 @@ function Dashboard() {
             <div className="weekly-bars-container">
               {weeklyActivity.map((day, idx) => (
                 <div className={`weekly-bar-col ${day.isToday ? "today" : ""}`} key={idx}>
-                  <span className="weekly-day-label">
-                    {day.dayLabel}
-                  </span>
+                  <span className="weekly-day-label">{day.dayLabel}</span>
                   <div className="weekly-bar-wrapper">
-                    <div
-                      className="weekly-bar-fill"
-                      style={{ height: `${day.pct}%` }}
-                    ></div>
+                    <div className="weekly-bar-fill" style={{ height: `${day.pct}%` }}></div>
                   </div>
-                  <span className="weekly-day-count">
-                    {day.completedCount}
-                  </span>
+                  <span className="weekly-day-count">{day.completedCount}</span>
                 </div>
               ))}
             </div>
@@ -554,9 +404,7 @@ function Dashboard() {
         <div
           className="modal-backdrop"
           onClick={(event) => {
-            if (
-              event.target === event.currentTarget
-            ) {
+            if (event.target === event.currentTarget) {
               clearForm();
             }
           }}
@@ -565,11 +413,7 @@ function Dashboard() {
             <div className="form-header">
               <div>
                 <p className="page-label">HABIT</p>
-                <h2>
-                  {editingId
-                    ? "Edit Habit"
-                    : "Create a Habit"}
-                </h2>
+                <h2>{editingId ? "Edit Habit" : "Create a Habit"}</h2>
               </div>
               <button
                 className="close-button"
@@ -600,9 +444,7 @@ function Dashboard() {
                   <label>Frequency</label>
                   <select
                     value={frequency}
-                    onChange={(event) =>
-                      setFrequency(event.target.value)
-                    }
+                    onChange={(event) => setFrequency(event.target.value)}
                   >
                     <option value="Daily">Daily</option>
                     <option value="Weekly">Weekly</option>
@@ -615,9 +457,7 @@ function Dashboard() {
                     type="number"
                     min="0"
                     value={streak}
-                    onChange={(event) =>
-                      setStreak(event.target.value)
-                    }
+                    onChange={(event) => setStreak(event.target.value)}
                   />
                 </div>
               </div>
@@ -626,11 +466,7 @@ function Dashboard() {
                 <input
                   type="checkbox"
                   checked={completedToday}
-                  onChange={(event) =>
-                    setCompletedToday(
-                      event.target.checked
-                    )
-                  }
+                  onChange={(event) => setCompletedToday(event.target.checked)}
                 />
                 Completed today
               </label>
@@ -653,9 +489,7 @@ function Dashboard() {
                   type="submit"
                   className="save-button"
                 >
-                  {editingId
-                    ? "Save Changes"
-                    : "Create Habit"}
+                  {editingId ? "Save Changes" : "Create Habit"}
                 </button>
               </div>
             </form>

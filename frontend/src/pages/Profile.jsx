@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import {
-  FiLayers,
-  FiCheckCircle,
-  FiZap,
-  FiEye,
-  FiEyeOff
-} from "react-icons/fi";
+import { FiLayers, FiCheckCircle, FiZap, FiEye, FiEyeOff } from "react-icons/fi";
 
 function Profile() {
   const [habits, setHabits] = useState([]);
-
   const [showEdit, setShowEdit] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -33,22 +26,18 @@ function Profile() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [avatar, setAvatar] = useState(
-    () => localStorage.getItem("profileImage") || ""
-  );
-
+  const [avatar, setAvatar] = useState(() => localStorage.getItem("profileImage") || "");
   const [loading, setLoading] = useState(false);
   const [editError, setEditError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
-  /* Get habits */
   const getHabits = async () => {
     try {
       const response = await api.get("/habits");
       setHabits(response.data);
     } catch (error) {
-      console.log("Error loading profile habits:", error);
+      console.error("Error loading profile habits:", error);
     }
   };
 
@@ -56,24 +45,12 @@ function Profile() {
     getHabits();
   }, []);
 
-  const totalCompleted = habits.reduce(
-    (total, habit) =>
-      total + (habit.completedDates?.length || 0),
-    0
-  );
+  const totalCompleted = habits.reduce((acc, h) => acc + (h.completedDates?.length || 0), 0);
+  const bestStreak = habits.length === 0 ? 0 : Math.max(...habits.map((h) => Number(h.streak) || 0));
 
-  const bestStreak =
-    habits.length === 0
-      ? 0
-      : Math.max(...habits.map((habit) => Number(habit.streak) || 0));
-
-  /* Upload profile photo */
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     if (!file.type.startsWith("image/")) {
       alert("Please select an image.");
@@ -86,70 +63,53 @@ function Profile() {
     }
 
     const reader = new FileReader();
-
     reader.onloadend = () => {
       localStorage.setItem("profileImage", reader.result);
       setAvatar(reader.result);
       window.dispatchEvent(new Event("userUpdated"));
     };
-
     reader.readAsDataURL(file);
   };
 
-  /* Update profile */
   const handleProfileUpdate = async (event) => {
     event.preventDefault();
     setEditError("");
 
-    if (name.trim() === "") {
+    if (!name.trim()) {
       setEditError("Name is required.");
       return;
     }
 
-    if (email.trim() === "") {
+    if (!email.trim()) {
       setEditError("Email is required.");
       return;
     }
 
     try {
       setLoading(true);
-
       const response = await api.put("/auth/profile", {
         name: name.trim(),
         email: email.trim()
       });
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
-      );
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       setCurrentUser(response.data.user);
       window.dispatchEvent(new Event("userUpdated"));
-
       setShowEdit(false);
     } catch (error) {
-      console.log("Error updating profile:", error);
-
-      setEditError(
-        error.response?.data?.message ||
-          "Could not update profile details."
-      );
+      console.error("Error updating profile:", error);
+      setEditError(error.response?.data?.message || "Could not update profile details.");
     } finally {
       setLoading(false);
     }
   };
 
-  /* Change password */
   const handlePasswordChange = async (event) => {
     event.preventDefault();
     setPasswordError("");
     setPasswordSuccess("");
 
-    if (
-      currentPassword === "" ||
-      newPassword === "" ||
-      confirmPassword === ""
-    ) {
+    if (!currentPassword || !newPassword || !confirmPassword) {
       setPasswordError("Please fill all password fields.");
       return;
     }
@@ -166,7 +126,6 @@ function Profile() {
 
     try {
       setLoading(true);
-
       await api.put("/auth/password", {
         currentPassword,
         newPassword
@@ -182,12 +141,8 @@ function Profile() {
         setPasswordSuccess("");
       }, 1500);
     } catch (error) {
-      console.log("Error changing password:", error);
-
-      setPasswordError(
-        error.response?.data?.message ||
-          "Could not change password."
-      );
+      console.error("Error changing password:", error);
+      setPasswordError(error.response?.data?.message || "Could not change password.");
     } finally {
       setLoading(false);
     }
@@ -514,3 +469,4 @@ function Profile() {
 }
 
 export default Profile;
+

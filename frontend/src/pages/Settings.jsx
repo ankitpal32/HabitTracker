@@ -7,25 +7,19 @@ function Settings() {
   const [defaultFrequency, setDefaultFrequency] = useState(
     localStorage.getItem("defaultFrequency") || "Daily"
   );
-
   const [confirmDelete, setConfirmDelete] = useState(
     localStorage.getItem("confirmDelete") !== "false"
   );
-
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("darkMode") === "true"
   );
-
   const [notifications, setNotifications] = useState(
     localStorage.getItem("notifications") !== "false"
   );
-
   const [saved, setSaved] = useState(false);
 
-  /* Trigger saved indicator */
   const triggerSaved = () => {
     setSaved(false);
-    // Use timeout to reset the indicator
     setTimeout(() => {
       setSaved(true);
       setTimeout(() => {
@@ -75,9 +69,7 @@ function Settings() {
       <div className="page-heading">
         <div>
           <p className="page-label">SETTINGS</p>
-
           <h1>Settings</h1>
-
           <p>Configure your habit tracking preferences.</p>
         </div>
 
@@ -87,7 +79,6 @@ function Settings() {
       <section className="settings-section">
         <div className="settings-section-heading">
           <h2>Habit Preferences</h2>
-
           <p>Choose how your habits behave.</p>
         </div>
 
@@ -95,10 +86,8 @@ function Settings() {
           <div className="setting-card">
             <div className="setting-info">
               <div className="setting-icon"><FiClock /></div>
-
               <div>
                 <h3>Default Frequency</h3>
-
                 <p>Used when you create a new habit.</p>
               </div>
             </div>
@@ -109,7 +98,6 @@ function Settings() {
               onChange={handleFrequencyChange}
             >
               <option value="Daily">Daily</option>
-
               <option value="Weekly">Weekly</option>
             </select>
           </div>
@@ -117,19 +105,15 @@ function Settings() {
           <div className="setting-card">
             <div className="setting-info">
               <div className="setting-icon"><FiTrash2 /></div>
-
               <div>
                 <h3>Confirm Before Delete</h3>
-
                 <p>Ask before removing a habit.</p>
               </div>
             </div>
 
             <button
               type="button"
-              className={
-                confirmDelete ? "toggle-button active" : "toggle-button"
-              }
+              className={confirmDelete ? "toggle-button active" : "toggle-button"}
               onClick={handleConfirmDeleteToggle}
               aria-label="Toggle delete confirmation"
             >
@@ -140,19 +124,15 @@ function Settings() {
           <div className="setting-card">
             <div className="setting-info">
               <div className="setting-icon">🌓</div>
-
               <div>
                 <h3>Dark Mode</h3>
-
                 <p>Toggle dark or light color theme.</p>
               </div>
             </div>
 
             <button
               type="button"
-              className={
-                darkMode ? "toggle-button active" : "toggle-button"
-              }
+              className={darkMode ? "toggle-button active" : "toggle-button"}
               onClick={handleDarkModeToggle}
               aria-label="Toggle dark mode"
             >
@@ -165,7 +145,6 @@ function Settings() {
       <section className="settings-section">
         <div className="settings-section-heading">
           <h2>Notifications</h2>
-
           <p>Choose whether habit reminders stay enabled.</p>
         </div>
 
@@ -173,19 +152,15 @@ function Settings() {
           <div className="setting-card">
             <div className="setting-info">
               <div className="setting-icon"><FiBell /></div>
-
               <div>
                 <h3>Habit Reminders</h3>
-
                 <p>Keep reminder preferences enabled.</p>
               </div>
             </div>
 
             <button
               type="button"
-              className={
-                notifications ? "toggle-button active" : "toggle-button"
-              }
+              className={notifications ? "toggle-button active" : "toggle-button"}
               onClick={handleNotificationsToggle}
               aria-label="Toggle habit reminders"
             >
@@ -198,17 +173,14 @@ function Settings() {
       <section className="settings-section">
         <div className="settings-section-heading">
           <h2>Account</h2>
-
           <p>Manage your current session.</p>
         </div>
 
         <div className="setting-card">
           <div className="setting-info">
             <div className="setting-icon danger"><FiLogOut /></div>
-
             <div>
               <h3>Sign out</h3>
-
               <p>Log out of your HabitTrack account.</p>
             </div>
           </div>
@@ -223,3 +195,4 @@ function Settings() {
 }
 
 export default Settings;
+

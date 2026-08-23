@@ -14,7 +14,6 @@ import {
 import logo from "../images/logo.png";
 
 function Home() {
-  /* Demo habits */
   const [demoHabits, setDemoHabits] = useState([
     { id: 1, name: "Coding Practice", completed: false, icon: <FiActivity />, frequency: "Daily" },
     { id: 2, name: "Reading", completed: true, icon: <FiBookOpen />, frequency: "Daily" },
@@ -23,11 +22,9 @@ function Home() {
   ]);
 
   const toggleDemoHabit = (id) => {
-    setDemoHabits(
-      demoHabits.map((habit) =>
-        habit.id === id
-          ? { ...habit, completed: !habit.completed }
-          : habit
+    setDemoHabits((prev) =>
+      prev.map((habit) =>
+        habit.id === id ? { ...habit, completed: !habit.completed } : habit
       )
     );
   };
@@ -38,8 +35,6 @@ function Home() {
 
   return (
     <div className="home-page">
-
-      {/* Header */}
       <nav className="home-nav">
         <div className="home-logo" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <img src={logo} alt="Logo" className="logo-img" style={{ width: 32, height: 32 }} />
@@ -47,7 +42,9 @@ function Home() {
         </div>
 
         <div>
-          <Link to="/login" style={{ color: "var(--muted)", textDecoration: "none", fontWeight: 600, fontSize: 14 }}>Login</Link>
+          <Link to="/login" style={{ color: "var(--muted)", textDecoration: "none", fontWeight: 600, fontSize: 14 }}>
+            Login
+          </Link>
           <Link
             to="/register"
             style={{
@@ -67,20 +64,16 @@ function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
       <main className="hero">
-
         <div className="hero-content">
           <p className="small-heading" style={{ color: "var(--primary)", fontWeight: 800 }}>
             BUILD BETTER HABITS
           </p>
-
           <h1>
             Small habits.
             <br />
             Big changes.
           </h1>
-
           <p className="hero-text">
             Track the habits that matter, build your streak, and see your progress one day at a time.
           </p>
@@ -93,7 +86,6 @@ function Home() {
             >
               Start Tracking
             </Link>
-
             <Link
               to="/login"
               className="secondary-button"
@@ -104,7 +96,6 @@ function Home() {
           </div>
         </div>
 
-        {/* Interactive product preview */}
         <div className="hero-card" style={{ maxWidth: 440 }}>
           <div className="preview-header" style={{ marginBottom: 16 }}>
             <span className="preview-badge" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
@@ -164,10 +155,8 @@ function Home() {
             ))}
           </div>
         </div>
-
       </main>
 
-      {/* Bento Grid */}
       <section className="bento-section">
         <div style={{ textAlign: "center", marginBottom: 30 }}>
           <p className="page-label" style={{ color: "var(--primary)" }}>FEATURES</p>
@@ -217,7 +206,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Statistics */}
       <section className="homepage-stats">
         <div className="homepage-stat-card">
           <h4>HABITS TRACKED</h4>
@@ -233,7 +221,6 @@ function Home() {
         </div>
       </section>
 
-      {/* How it works */}
       <section className="steps-section" style={{ borderTop: "1px solid var(--border)", paddingTop: 60 }}>
         <p className="page-label" style={{ color: "var(--primary)" }}>STEPS</p>
         <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.8px", margin: "4px 0" }}>Simple. Habitual. Actionable.</h2>
@@ -268,7 +255,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Motivation Section */}
       <section className="motivation-section">
         <div className="motivation-container">
           <div className="motivation-content">
@@ -294,7 +280,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="home-footer">
         <div className="home-footer-container">
           <div className="home-footer-left">
@@ -312,7 +297,6 @@ function Home() {
           </div>
         </div>
       </footer>
-
     </div>
   );
 }

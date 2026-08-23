@@ -13,7 +13,6 @@ function Login() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  /* Login user */
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
@@ -26,7 +25,6 @@ function Login() {
 
     try {
       setLoading(true);
-
       const response = await api.post("/auth/login", {
         email: email.trim(),
         password
@@ -37,17 +35,13 @@ function Login() {
       window.dispatchEvent(new Event("userUpdated"));
 
       setSuccess("Login successful! Redirecting...");
-
-      /* Redirect to dashboard */
       setTimeout(() => {
         navigate("/dashboard");
       }, 500);
-
     } catch (err) {
-      console.log(err);
+      console.error("Login error:", err);
       setError(
-        err.response?.data?.message ||
-        "Login failed. Please verify your credentials."
+        err.response?.data?.message || "Login failed. Please verify your credentials."
       );
     } finally {
       setLoading(false);
@@ -111,7 +105,6 @@ function Login() {
                 style={{ paddingRight: "44px" }}
               />
 
-              {/* Toggle password */}
               <button
                 type="button"
                 className="password-toggle"

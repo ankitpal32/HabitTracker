@@ -24,16 +24,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public pages */}
-
+        {/* Public routes */}
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
-        {/* App pages */}
-
+        {/* Authenticated routes */}
         <Route
           path="/dashboard"
           element={
@@ -44,7 +40,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/progress"
           element={
@@ -55,7 +50,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/history"
           element={
@@ -66,7 +60,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/achievements"
           element={
@@ -77,7 +70,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/profile"
           element={
@@ -88,7 +80,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/settings"
           element={
@@ -105,3 +96,4 @@ function App() {
 }
 
 export default App;
+

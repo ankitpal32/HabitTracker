@@ -16,11 +16,8 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  /* Password strength validation */
   const getPasswordStrength = () => {
-    if (!password) {
-      return "";
-    }
+    if (!password) return "";
     let strength = 0;
     if (password.length >= 6) strength += 1;
     if (/[A-Z]/.test(password) || /[0-9]/.test(password)) strength += 1;
@@ -33,7 +30,6 @@ function Register() {
 
   const passwordStrength = getPasswordStrength();
 
-  /* Register user */
   const handleRegister = async (event) => {
     event.preventDefault();
     setError("");
@@ -56,7 +52,6 @@ function Register() {
 
     try {
       setLoading(true);
-
       const response = await api.post("/auth/register", {
         name: name.trim(),
         email: email.trim(),
@@ -64,8 +59,7 @@ function Register() {
       });
 
       setSuccess(
-        response.data.message ||
-        "Account created successfully. Redirecting to login..."
+        response.data.message || "Account created successfully. Redirecting to login..."
       );
 
       setName("");
@@ -73,16 +67,13 @@ function Register() {
       setPassword("");
       setConfirmPassword("");
 
-      /* Redirect to login */
       setTimeout(() => {
         navigate("/login");
       }, 1000);
-
     } catch (err) {
-      console.log("Registration error:", err);
+      console.error("Registration error:", err);
       setError(
-        err.response?.data?.message ||
-        "Registration failed. Please try again."
+        err.response?.data?.message || "Registration failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -160,7 +151,6 @@ function Register() {
                 style={{ paddingRight: "44px" }}
               />
 
-              {/* Toggle password */}
               <button
                 type="button"
                 className="password-toggle"
@@ -187,17 +177,41 @@ function Register() {
               <div className="password-strength-container">
                 <div className="password-strength-text">
                   <span>Password Strength</span>
-                  <span style={{
-                    color:
-                      passwordStrength === "Weak" ? "var(--red)" :
-                      passwordStrength === "Medium" ? "var(--orange)" :
-                      "var(--green)"
-                  }}>{passwordStrength}</span>
+                  <span
+                    style={{
+                      color:
+                        passwordStrength === "Weak"
+                          ? "var(--red)"
+                          : passwordStrength === "Medium"
+                          ? "var(--orange)"
+                          : "var(--green)"
+                    }}
+                  >
+                    {passwordStrength}
+                  </span>
                 </div>
 
                 <div className="password-strength-bars">
-                  <span className={passwordStrength ? (passwordStrength === "Weak" ? "weak" : passwordStrength === "Medium" ? "medium" : "strong") : ""}></span>
-                  <span className={passwordStrength === "Medium" ? "medium" : passwordStrength === "Strong" ? "strong" : ""}></span>
+                  <span
+                    className={
+                      passwordStrength
+                        ? passwordStrength === "Weak"
+                          ? "weak"
+                          : passwordStrength === "Medium"
+                          ? "medium"
+                          : "strong"
+                        : ""
+                    }
+                  ></span>
+                  <span
+                    className={
+                      passwordStrength === "Medium"
+                        ? "medium"
+                        : passwordStrength === "Strong"
+                        ? "strong"
+                        : ""
+                    }
+                  ></span>
                   <span className={passwordStrength === "Strong" ? "strong" : ""}></span>
                 </div>
               </div>
@@ -219,7 +233,6 @@ function Register() {
                 style={{ paddingRight: "44px" }}
               />
 
-              {/* Toggle confirm password */}
               <button
                 type="button"
                 className="password-toggle"
