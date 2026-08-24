@@ -46,8 +46,9 @@ const registerUser = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error("Registration error:", error.message || error);
     res.status(500).json({
-      message: error.message || "Registration failed"
+      message: "Registration failed. Please try again."
     });
   }
 };
@@ -100,8 +101,9 @@ const loginUser = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error("Login error:", error.message || error);
     res.status(500).json({
-      message: error.message || "Login failed"
+      message: "Login failed. Please try again."
     });
   }
 };

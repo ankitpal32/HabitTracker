@@ -10,3 +10,8 @@ dist-ssr/
 backend/.env
 frontend/.env
 frontend/.env.local
+
+# Allow example environment templates
+!.env.example
+!backend/.env.example
+!frontend/.env.example

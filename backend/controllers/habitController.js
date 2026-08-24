@@ -53,8 +53,9 @@ const getHabits = async (req, res) => {
 
     res.json(updatedHabits);
   } catch (error) {
+    console.error("GetHabits error:", error.message || error);
     res.status(500).json({
-      message: error.message || "Failed to fetch habits"
+      message: "Failed to fetch habits"
     });
   }
 };
@@ -81,8 +82,9 @@ const getHabitById = async (req, res) => {
 
     res.json(habit);
   } catch (error) {
+    console.error("GetHabitById error:", error.message || error);
     res.status(500).json({
-      message: error.message || "Failed to fetch habit"
+      message: "Failed to fetch habit"
     });
   }
 };
@@ -108,8 +110,9 @@ const createHabit = async (req, res) => {
 
     res.status(201).json(habit);
   } catch (error) {
+    console.error("CreateHabit error:", error.message || error);
     res.status(400).json({
-      message: error.message || "Failed to create habit"
+      message: "Failed to create habit"
     });
   }
 };
@@ -158,8 +161,9 @@ const updateHabit = async (req, res) => {
 
     res.json(habit);
   } catch (error) {
+    console.error("UpdateHabit error:", error.message || error);
     res.status(400).json({
-      message: error.message || "Failed to update habit"
+      message: "Failed to update habit"
     });
   }
 };
@@ -188,8 +192,9 @@ const deleteHabit = async (req, res) => {
       message: "Habit deleted successfully"
     });
   } catch (error) {
+    console.error("DeleteHabit error:", error.message || error);
     res.status(500).json({
-      message: error.message || "Failed to delete habit"
+      message: "Failed to delete habit"
     });
   }
 };
@@ -245,8 +250,9 @@ const completeHabit = async (req, res) => {
 
     res.json(habit);
   } catch (error) {
+    console.error("CompleteHabit error:", error.message || error);
     res.status(500).json({
-      message: error.message || "Failed to complete habit"
+      message: "Failed to complete habit"
     });
   }
 };

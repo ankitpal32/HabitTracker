@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api, { getErrorMessage } from "../services/api";
 import {
   FiLayers,
   FiCheckCircle,
@@ -112,7 +112,7 @@ function Profile() {
       setShowEdit(false);
     } catch (error) {
       console.error("Error updating profile:", error);
-      setEditError(error.response?.data?.message || "Could not update profile details.");
+      setEditError(getErrorMessage(error, "Could not update profile details."));
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ function Profile() {
       }, 1500);
     } catch (error) {
       console.error("Error changing password:", error);
-      setPasswordError(error.response?.data?.message || "Could not change password.");
+      setPasswordError(getErrorMessage(error, "Could not change password."));
     } finally {
       setLoading(false);
     }

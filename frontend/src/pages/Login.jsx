@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../services/api";
+import api, { getErrorMessage } from "../services/api";
 import { FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle, FiArrowLeft } from "react-icons/fi";
 import logo from "../images/logo.png";
 
@@ -16,6 +16,8 @@ function Login() {
   /* Login user */
   const handleLogin = async (event) => {
     event.preventDefault();
+    if (loading) return;
+
     setError("");
     setSuccess("");
 
@@ -42,7 +44,7 @@ function Login() {
     } catch (err) {
       console.error("Login error:", err);
       setError(
-        err.response?.data?.message || "Login failed. Please verify your credentials."
+        getErrorMessage(err, "Login failed. Please verify your credentials.")
       );
     } finally {
       setLoading(false);

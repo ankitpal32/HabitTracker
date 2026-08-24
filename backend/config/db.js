@@ -7,7 +7,7 @@ const connectDB = async () => {
     console.error(
       "❌ MongoDB connection error: MONGODB_URI or MONGO_URI is not defined in your environment variables (.env)."
     );
-    process.exit(1);
+    return;
   }
 
   try {
@@ -20,7 +20,6 @@ const connectDB = async () => {
     console.log(`✅ MongoDB Atlas connected successfully: ${conn.connection.host}`);
   } catch (error) {
     console.error(`❌ MongoDB Atlas connection failed: ${error.message}`);
-    process.exit(1);
   }
 };
 

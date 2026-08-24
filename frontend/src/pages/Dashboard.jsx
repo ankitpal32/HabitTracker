@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api, { getErrorMessage } from "../services/api";
 import {
   FiPlus,
   FiCheck,
@@ -102,7 +102,7 @@ function Dashboard() {
       setShowModal(false);
     } catch (error) {
       console.error("Error saving habit:", error);
-      setFormError(error.response?.data?.message || "Failed to save habit");
+      setFormError(getErrorMessage(error, "Failed to save habit"));
     } finally {
       setSubmitting(false);
     }

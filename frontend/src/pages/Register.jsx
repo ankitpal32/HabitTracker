@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../services/api";
+import api, { getErrorMessage } from "../services/api";
 import { FiEye, FiEyeOff, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
 import logo from "../images/logo.png";
 
@@ -34,6 +34,8 @@ function Register() {
   /* Register user */
   const handleRegister = async (event) => {
     event.preventDefault();
+    if (loading) return;
+
     setError("");
     setSuccess("");
 
@@ -75,7 +77,7 @@ function Register() {
     } catch (err) {
       console.error("Registration error:", err);
       setError(
-        err.response?.data?.message || "Registration failed. Please try again."
+        getErrorMessage(err, "Registration failed. Please try again.")
       );
     } finally {
       setLoading(false);
