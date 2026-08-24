@@ -10,7 +10,7 @@ import {
   FiBell,
   FiMenu,
   FiX,
-  FiChevronDown
+  FiChevronDown,
 } from "react-icons/fi";
 import { FaTrophy } from "react-icons/fa";
 import logo from "../images/logo.png";
@@ -30,7 +30,7 @@ function Layout({ children }) {
   });
 
   const [avatar, setAvatar] = useState(
-    () => localStorage.getItem("profileImage") || ""
+    () => localStorage.getItem("profileImage") || "",
   );
 
   useEffect(() => {
@@ -64,7 +64,6 @@ function Layout({ children }) {
       {/* Top Navbar */}
       <header className="top-navbar">
         <div className="navbar-inner-container">
-          
           {/* Left: Brand Logo & Wordmark */}
           <Link to="/dashboard" className="navbar-brand-link">
             <img src={logo} alt="HabitTrack Logo" className="navbar-logo-img" />
@@ -112,8 +111,6 @@ function Layout({ children }) {
               <FaTrophy className="nav-item-icon" />
               <span>Achievements</span>
             </NavLink>
-
-            
           </nav>
 
           {/* Right: Notifications & User Profile Menu */}
