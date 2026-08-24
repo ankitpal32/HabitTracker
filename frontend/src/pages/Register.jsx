@@ -16,27 +16,29 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  /* Password strength evaluation */
   const getPasswordStrength = () => {
     if (!password) return "";
-    let strength = 0;
-    if (password.length >= 6) strength += 1;
-    if (/[A-Z]/.test(password) || /[0-9]/.test(password)) strength += 1;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+    let score = 0;
+    if (password.length >= 6) score += 1;
+    if (/[A-Z]/.test(password) || /[0-9]/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
 
-    if (strength === 1) return "Weak";
-    if (strength === 2) return "Medium";
+    if (score <= 1) return "Weak";
+    if (score === 2) return "Medium";
     return "Strong";
   };
 
   const passwordStrength = getPasswordStrength();
 
+  /* Register user */
   const handleRegister = async (event) => {
     event.preventDefault();
     setError("");
     setSuccess("");
 
     if (!name.trim() || !email.trim() || !password || !confirmPassword) {
-      setError("Please fill all fields.");
+      setError("Please fill all required fields.");
       return;
     }
 
@@ -59,7 +61,7 @@ function Register() {
       });
 
       setSuccess(
-        response.data.message || "Account created successfully. Redirecting to login..."
+        response.data.message || "Account created successfully! Redirecting to login..."
       );
 
       setName("");
@@ -81,49 +83,52 @@ function Register() {
   };
 
   return (
-    <div className="auth-page">
-      <Link to="/" className="auth-back-btn">
+    <div className="auth-viewport">
+      <Link to="/" className="auth-back-nav">
         <FiArrowLeft /> Back to Home
       </Link>
 
-      <div className="auth-card">
-        <div className="auth-header">
-          <img src={logo} alt="Logo" className="logo-img" style={{ width: 44, height: 44 }} />
-          <h1>Create your account</h1>
-          <p>Start tracking, building streaks, and leveling up your routines.</p>
+      <div className="auth-card-box">
+        <div className="auth-brand-header">
+          <img src={logo} alt="HabitTrack Logo" className="auth-brand-logo" />
+          <h1 className="auth-heading">Create an account</h1>
+          <p className="auth-description">
+            Start tracking, building streaks, and elevating your daily habits.
+          </p>
         </div>
 
         {error && (
-          <div className="auth-message error">
-            <FiAlertCircle size={16} />
+          <div className="auth-inline-alert error">
+            <FiAlertCircle />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="auth-message success">
-            <FiCheckCircle size={16} />
+          <div className="auth-inline-alert success">
+            <FiCheckCircle />
             <span>{success}</span>
           </div>
         )}
 
-        <form onSubmit={handleRegister}>
-          <label>
-            <span>Full Name</span>
+        <form onSubmit={handleRegister} className="auth-form-body">
+          <div className="form-group">
+            <label>Full Name</label>
             <input
               type="text"
-              placeholder="Alex Mercer"
+              placeholder="e.g. Alex Mercer"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
                 setError("");
               }}
               disabled={loading}
+              autoComplete="name"
             />
-          </label>
+          </div>
 
-          <label>
-            <span>Email Address</span>
+          <div className="form-group">
+            <label>Email Address</label>
             <input
               type="email"
               placeholder="you@example.com"
@@ -133,12 +138,13 @@ function Register() {
                 setError("");
               }}
               disabled={loading}
+              autoComplete="email"
             />
-          </label>
+          </div>
 
-          <label>
-            <span>Password</span>
-            <div className="password-input" style={{ position: "relative" }}>
+          <div className="form-group">
+            <label>Password</label>
+            <div className="password-input-wrapper">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Create a strong password"
@@ -148,125 +154,70 @@ function Register() {
                   setError("");
                 }}
                 disabled={loading}
-                style={{ paddingRight: "44px" }}
+                autoComplete="new-password"
               />
-
               <button
                 type="button"
-                className="password-toggle"
+                className="password-toggle-trigger"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "var(--muted)"
-                }}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
 
             {password && (
-              <div className="password-strength-container">
-                <div className="password-strength-text">
-                  <span>Password Strength</span>
-                  <span
-                    style={{
-                      color:
-                        passwordStrength === "Weak"
-                          ? "var(--red)"
-                          : passwordStrength === "Medium"
-                          ? "var(--orange)"
-                          : "var(--green)"
-                    }}
-                  >
+              <div className="strength-meter-wrap">
+                <div className="strength-label-row">
+                  <span>Strength</span>
+                  <span className={`strength-val ${passwordStrength.toLowerCase()}`}>
                     {passwordStrength}
                   </span>
                 </div>
-
-                <div className="password-strength-bars">
-                  <span
-                    className={
-                      passwordStrength
-                        ? passwordStrength === "Weak"
-                          ? "weak"
-                          : passwordStrength === "Medium"
-                          ? "medium"
-                          : "strong"
-                        : ""
-                    }
-                  ></span>
-                  <span
-                    className={
-                      passwordStrength === "Medium"
-                        ? "medium"
-                        : passwordStrength === "Strong"
-                        ? "strong"
-                        : ""
-                    }
-                  ></span>
-                  <span className={passwordStrength === "Strong" ? "strong" : ""}></span>
+                <div className="strength-bars">
+                  <div className={`bar ${passwordStrength ? "active " + passwordStrength.toLowerCase() : ""}`} />
+                  <div className={`bar ${passwordStrength === "Medium" || passwordStrength === "Strong" ? "active " + passwordStrength.toLowerCase() : ""}`} />
+                  <div className={`bar ${passwordStrength === "Strong" ? "active strong" : ""}`} />
                 </div>
               </div>
             )}
-          </label>
+          </div>
 
-          <label>
-            <span>Confirm Password</span>
-            <div className="password-input" style={{ position: "relative" }}>
+          <div className="form-group">
+            <label>Confirm Password</label>
+            <div className="password-input-wrapper">
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm your password"
+                placeholder="Repeat your password"
                 value={confirmPassword}
                 onChange={(e) => {
                   setConfirmPassword(e.target.value);
                   setError("");
                 }}
                 disabled={loading}
-                style={{ paddingRight: "44px" }}
+                autoComplete="new-password"
               />
-
               <button
                 type="button"
-                className="password-toggle"
+                className="password-toggle-trigger"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "var(--muted)"
-                }}
               >
                 {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
-          </label>
+          </div>
 
           <button
             type="submit"
-            className="primary-button"
+            className="btn-primary auth-submit-btn"
             disabled={loading}
-            style={{ width: "100%", height: 42, display: "flex", alignItems: "center", justifyContent: "center" }}
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
-        <p className="auth-link">
+        <p className="auth-bottom-text">
           Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </div>

@@ -1,6 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import { FiLayers, FiCheckCircle, FiZap, FiEye, FiEyeOff } from "react-icons/fi";
+import {
+  FiLayers,
+  FiCheckCircle,
+  FiZap,
+  FiCamera,
+  FiEye,
+  FiEyeOff,
+  FiUser,
+  FiMail,
+  FiLock,
+  FiEdit3
+} from "react-icons/fi";
 
 function Profile() {
   const [habits, setHabits] = useState([]);
@@ -32,6 +43,7 @@ function Profile() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
+  /* Get habits for statistics */
   const getHabits = async () => {
     try {
       const response = await api.get("/habits");
@@ -48,17 +60,18 @@ function Profile() {
   const totalCompleted = habits.reduce((acc, h) => acc + (h.completedDates?.length || 0), 0);
   const bestStreak = habits.length === 0 ? 0 : Math.max(...habits.map((h) => Number(h.streak) || 0));
 
+  /* Upload profile photo */
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please select an image.");
+      setEditError("Please select a valid image file.");
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert("Please choose an image smaller than 2MB.");
+      setEditError("Please choose an image smaller than 2MB.");
       return;
     }
 
@@ -71,6 +84,7 @@ function Profile() {
     reader.readAsDataURL(file);
   };
 
+  /* Update profile */
   const handleProfileUpdate = async (event) => {
     event.preventDefault();
     setEditError("");
@@ -104,6 +118,7 @@ function Profile() {
     }
   };
 
+  /* Change password */
   const handlePasswordChange = async (event) => {
     event.preventDefault();
     setPasswordError("");
@@ -149,165 +164,190 @@ function Profile() {
   };
 
   return (
-    <div className="profile-page">
-      <div className="page-heading">
-        <div>
-          <p className="page-label">PROFILE</p>
-          <h1>User Profile</h1>
-          <p>Manage your profile details and track your stats.</p>
+    <div className="profile-view">
+      {/* Page Header */}
+      <section className="view-header">
+        <div className="header-meta">
+          <span className="page-pretitle">ACCOUNT</span>
+          <h1 className="page-title">User Profile</h1>
+          <p className="page-subtitle">
+            Manage your personal credentials, preferences, and overview.
+          </p>
         </div>
-      </div>
+      </section>
 
-      <section className="profile-card">
-        <div className="profile-avatar-area">
-          <div className="profile-avatar-wrap">
-            <div className="profile-avatar">
+      {/* Header Card (Compact horizontal layout) */}
+      <section className="profile-header-card">
+        <div className="profile-header-left">
+          <div className="profile-avatar-container">
+            <div className="profile-avatar-display">
               {avatar ? (
-                <img src={avatar} alt="Profile" />
+                <img src={avatar} alt="User Profile" />
               ) : (
-                currentUser?.name?.charAt(0).toUpperCase() || "U"
+                <span className="avatar-initials">
+                  {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+                </span>
               )}
             </div>
-            <label className="avatar-edit-button" title="Change photo">
-              📷
-              <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
+
+            <label className="avatar-camera-btn" title="Change photo">
+              <FiCamera />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+              />
             </label>
           </div>
+
+          <div className="profile-user-headline">
+            <h2 className="profile-user-name">{currentUser?.name || "User"}</h2>
+            <p className="profile-user-email">{currentUser?.email || "No email"}</p>
+          </div>
         </div>
 
-        <div className="profile-user-info">
-          <h2>{currentUser?.name || "User"}</h2>
-          <p>{currentUser?.email || "No email available"}</p>
+        <div className="profile-header-actions">
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => {
+              setName(currentUser?.name || "");
+              setEmail(currentUser?.email || "");
+              setEditError("");
+              setShowEdit(true);
+            }}
+          >
+            <FiEdit3 /> Edit Profile
+          </button>
 
-          <div className="profile-actions">
-            <button
-              className="add-button"
-              onClick={() => {
-                setName(currentUser?.name || "");
-                setEmail(currentUser?.email || "");
-                setShowEdit(true);
-              }}
-            >
-              Edit Profile
-            </button>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              setPasswordError("");
+              setPasswordSuccess("");
+              setShowPassword(true);
+            }}
+          >
+            <FiLock /> Change Password
+          </button>
+        </div>
+      </section>
 
-            <button
-              className="secondary-button"
-              onClick={() => setShowPassword(true)}
-            >
-              Change Password
-            </button>
+      {/* 3 Equal Statistics */}
+      <section className="stats-grid three-col">
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">Total Habits</span>
+            <span className="stat-card-icon violet"><FiLayers /></span>
+          </div>
+          <strong className="stat-card-value">{habits.length}</strong>
+          <span className="stat-card-desc">Active routines</span>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">Completions</span>
+            <span className="stat-card-icon green"><FiCheckCircle /></span>
+          </div>
+          <strong className="stat-card-value">{totalCompleted}</strong>
+          <span className="stat-card-desc">Finished check-ins</span>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-card-title">Best Streak</span>
+            <span className="stat-card-icon orange"><FiZap /></span>
+          </div>
+          <strong className="stat-card-value">{bestStreak}</strong>
+          <span className="stat-card-desc">Days at your peak</span>
+        </div>
+      </section>
+
+      {/* Account Information Card */}
+      <section className="dashboard-section account-info-section">
+        <div className="section-header-compact">
+          <div className="section-title-wrap">
+            <span className="section-pretitle">DETAILS</span>
+            <h3 className="section-title">Account Information</h3>
+          </div>
+        </div>
+
+        <div className="account-details-grid">
+          <div className="account-detail-item">
+            <div className="detail-icon"><FiUser /></div>
+            <div className="detail-meta">
+              <span className="detail-label">Full Name</span>
+              <strong className="detail-val">{currentUser?.name || "Not specified"}</strong>
+            </div>
+          </div>
+
+          <div className="account-detail-item">
+            <div className="detail-icon"><FiMail /></div>
+            <div className="detail-meta">
+              <span className="detail-label">Email Address</span>
+              <strong className="detail-val">{currentUser?.email || "Not specified"}</strong>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="overview profile-stats">
-        <div className="stat-card">
-          <div className="stat-card-top">
-            <span>Total Habits</span>
-            <span className="stat-icon"><FiLayers /></span>
-          </div>
-          <strong className="stat-number">{habits.length}</strong>
-          <span className="stat-description">Habits you're tracking</span>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-top">
-            <span>Completions</span>
-            <span className="stat-icon green"><FiCheckCircle /></span>
-          </div>
-          <strong className="stat-number">{totalCompleted}</strong>
-          <span className="stat-description">Total completed habits</span>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-top">
-            <span>Best Streak</span>
-            <span className="stat-icon orange"><FiZap /></span>
-          </div>
-          <strong className="stat-number">{bestStreak}</strong>
-          <span className="stat-description">Days at your best</span>
-        </div>
-      </section>
-
-      <section className="profile-details">
-        <div className="profile-details-heading">
-          <div>
-            <p className="page-label">PERSONAL</p>
-            <h2>Account Information</h2>
-          </div>
-        </div>
-
-        <div className="profile-row">
-          <span>Name</span>
-          <strong>{currentUser?.name || "User"}</strong>
-        </div>
-
-        <div className="profile-row">
-          <span>Email</span>
-          <strong>{currentUser?.email || "Not available"}</strong>
-        </div>
-      </section>
-
+      {/* Edit Profile Modal */}
       {showEdit && (
         <div
           className="modal-backdrop"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setShowEdit(false);
-            }
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowEdit(false);
           }}
         >
-          <div className="profile-modal">
-            <div className="form-header">
-              <div>
-                <p className="page-label">PROFILE</p>
-                <h2>Edit Profile</h2>
-              </div>
+          <div className="modal-card">
+            <div className="modal-header">
+              <h3>Edit Profile</h3>
               <button
-                className="close-button"
+                type="button"
+                className="modal-close-btn"
                 onClick={() => setShowEdit(false)}
+                aria-label="Close modal"
               >
-                ×
+                &times;
               </button>
             </div>
 
-            <form onSubmit={handleProfileUpdate}>
+            <form onSubmit={handleProfileUpdate} className="modal-form">
               <div className="form-group">
-                <label>Name</label>
+                <label>Full Name</label>
                 <input
                   type="text"
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your Name"
                 />
               </div>
 
               <div className="form-group">
-                <label>Email</label>
+                <label>Email Address</label>
                 <input
                   type="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
                 />
               </div>
 
-              {editError && (
-                <div style={{ color: "var(--red)", fontSize: "13px", fontWeight: "600", marginBottom: "15px" }}>
-                  {editError}
-                </div>
-              )}
+              {editError && <div className="form-error-msg">{editError}</div>}
 
-              <div className="form-buttons">
+              <div className="modal-actions">
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="btn-secondary"
                   onClick={() => setShowEdit(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="save-button"
+                  className="btn-primary"
                   disabled={loading}
                 >
                   {loading ? "Saving..." : "Save Changes"}
@@ -318,54 +358,42 @@ function Profile() {
         </div>
       )}
 
+      {/* Change Password Modal */}
       {showPassword && (
         <div
           className="modal-backdrop"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setShowPassword(false);
-            }
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowPassword(false);
           }}
         >
-          <div className="profile-modal">
-            <div className="form-header">
-              <div>
-                <p className="page-label">SECURITY</p>
-                <h2>Change Password</h2>
-              </div>
+          <div className="modal-card">
+            <div className="modal-header">
+              <h3>Change Password</h3>
               <button
-                className="close-button"
+                type="button"
+                className="modal-close-btn"
                 onClick={() => setShowPassword(false)}
+                aria-label="Close modal"
               >
-                ×
+                &times;
               </button>
             </div>
 
-            <form onSubmit={handlePasswordChange}>
+            <form onSubmit={handlePasswordChange} className="modal-form">
               <div className="form-group">
-                <label>Current password</label>
-                <div style={{ position: "relative" }}>
+                <label>Current Password</label>
+                <div className="password-field-wrap">
                   <input
                     type={showCurrentPassword ? "text" : "password"}
                     value={currentPassword}
-                    onChange={(event) => setCurrentPassword(event.target.value)}
-                    style={{ paddingRight: 40 }}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
                   />
                   <button
                     type="button"
+                    className="password-toggle-btn"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    style={{
-                      position: "absolute",
-                      right: 12,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "transparent",
-                      border: 0,
-                      color: "var(--muted)",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center"
-                    }}
+                    aria-label="Toggle current password"
                   >
                     {showCurrentPassword ? <FiEyeOff /> : <FiEye />}
                   </button>
@@ -373,29 +401,19 @@ function Profile() {
               </div>
 
               <div className="form-group">
-                <label>New password</label>
-                <div style={{ position: "relative" }}>
+                <label>New Password</label>
+                <div className="password-field-wrap">
                   <input
                     type={showNewPassword ? "text" : "password"}
                     value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    style={{ paddingRight: 40 }}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Min 6 characters"
                   />
                   <button
                     type="button"
+                    className="password-toggle-btn"
                     onClick={() => setShowNewPassword(!showNewPassword)}
-                    style={{
-                      position: "absolute",
-                      right: 12,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "transparent",
-                      border: 0,
-                      color: "var(--muted)",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center"
-                    }}
+                    aria-label="Toggle new password"
                   >
                     {showNewPassword ? <FiEyeOff /> : <FiEye />}
                   </button>
@@ -403,58 +421,39 @@ function Profile() {
               </div>
 
               <div className="form-group">
-                <label>Confirm new password</label>
-                <div style={{ position: "relative" }}>
+                <label>Confirm New Password</label>
+                <div className="password-field-wrap">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
-                    style={{ paddingRight: 40 }}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Repeat new password"
                   />
                   <button
                     type="button"
+                    className="password-toggle-btn"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{
-                      position: "absolute",
-                      right: 12,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "transparent",
-                      border: 0,
-                      color: "var(--muted)",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center"
-                    }}
+                    aria-label="Toggle confirm password"
                   >
                     {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
                   </button>
                 </div>
               </div>
 
-              {passwordError && (
-                <div style={{ color: "var(--red)", fontSize: "13px", fontWeight: "600", marginBottom: "15px" }}>
-                  {passwordError}
-                </div>
-              )}
+              {passwordError && <div className="form-error-msg">{passwordError}</div>}
+              {passwordSuccess && <div className="form-success-msg">{passwordSuccess}</div>}
 
-              {passwordSuccess && (
-                <div style={{ color: "var(--green)", fontSize: "13px", fontWeight: "600", marginBottom: "15px" }}>
-                  {passwordSuccess}
-                </div>
-              )}
-
-              <div className="form-buttons">
+              <div className="modal-actions">
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="btn-secondary"
                   onClick={() => setShowPassword(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="save-button"
+                  className="btn-primary"
                   disabled={loading}
                 >
                   {loading ? "Updating..." : "Change Password"}
@@ -469,4 +468,3 @@ function Profile() {
 }
 
 export default Profile;
-

@@ -6,7 +6,9 @@ import {
   FiZap,
   FiTrendingUp,
   FiAward,
-  FiTarget
+  FiTarget,
+  FiLock,
+  FiUnlock
 } from "react-icons/fi";
 import { FaTrophy } from "react-icons/fa";
 
@@ -14,6 +16,7 @@ function Achievements() {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  /* Get habits */
   const getHabits = async () => {
     try {
       setLoading(true);
@@ -40,6 +43,7 @@ function Achievements() {
       ? 0
       : Math.max(...habits.map((habit) => Number(habit.streak) || 0));
 
+  /* Exactly 6 achievements */
   const achievements = [
     {
       icon: <FiPlusCircle />,
@@ -91,60 +95,94 @@ function Achievements() {
   };
 
   const isUnlocked = (achievement) => achievement.value >= achievement.target;
+  const unlockedCount = achievements.filter(isUnlocked).length;
 
   if (loading) {
     return (
-      <div className="achievements-page">
-        <div className="page-heading">
-          <div>
-            <p className="page-label">REWARDS</p>
-            <h1>Achievements</h1>
-            <p>Loading your achievements...</p>
+      <div className="achievements-view">
+        <section className="view-header">
+          <div className="header-meta">
+            <span className="page-pretitle">MILESTONES</span>
+            <h1 className="page-title">Achievements & Badges</h1>
+            <p className="page-subtitle">Loading your milestones...</p>
           </div>
-        </div>
-
-        <div className="empty-card">
+        </section>
+        <div className="empty-state-card">
           <div className="empty-icon"><FaTrophy /></div>
-          <h3>Loading...</h3>
+          <h4>Loading achievements...</h4>
+          <p>Fetching your latest unlocked badges and milestone stats.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="achievements-page">
-      <div className="page-heading">
-        <div>
-          <p className="page-label">MILESTONES</p>
-          <h1>Achievements</h1>
-          <p>Track your milestones and unlock rewards.</p>
+    <div className="achievements-view">
+
+      {/* Page Header */}
+      <section className="view-header">
+        <div className="header-meta">
+          <span className="page-pretitle">MILESTONES</span>
+          <h1 className="page-title">Achievements & Badges</h1>
+          <p className="page-subtitle">
+            Celebrate your habit milestones as your consistency compounds.
+          </p>
+        </div>
+      </section>
+
+      {/* Progress banner */}
+      <div className="achievements-banner-card">
+        <div className="banner-icon-wrap">
+          <FaTrophy />
+        </div>
+        <div className="banner-text-wrap">
+          <h3>{unlockedCount} of 6 Unlocked</h3>
+          <p>Keep building streaks and checking in daily to unlock remaining badges.</p>
+        </div>
+        <div className="banner-progress-wrap">
+          <div className="banner-track">
+            <div
+              className="banner-fill"
+              style={{ width: `${Math.round((unlockedCount / 6) * 100)}%` }}
+            />
+          </div>
+          <span className="banner-pct">{Math.round((unlockedCount / 6) * 100)}%</span>
         </div>
       </div>
 
-      <div className="achievement-grid">
-        {achievements.map((achievement) => {
-          const unlocked = isUnlocked(achievement);
-          const progress = getProgress(achievement);
+      {/* 6 Achievements Grid */}
+      <div className="achievements-grid">
+        {achievements.map((item) => {
+          const unlocked = isUnlocked(item);
+          const progressPct = getProgress(item);
 
           return (
             <div
-              className={unlocked ? "achievement-card unlocked" : "achievement-card locked"}
-              key={achievement.title}
+              key={item.title}
+              className={`achievement-card ${unlocked ? "unlocked" : "locked"}`}
             >
-              <div className="achievement-icon">{achievement.icon}</div>
+              <div className="achievement-top">
+                <div className="achievement-icon-box">{item.icon}</div>
+                <span className={`achievement-badge ${unlocked ? "badge-unlocked" : "badge-locked"}`}>
+                  {unlocked ? <><FiUnlock /> Unlocked</> : <><FiLock /> Locked</>}
+                </span>
+              </div>
 
-              <div className="achievement-content">
-                <div className="achievement-title-row">
-                  <h3>{achievement.title}</h3>
-                  <span className={unlocked ? "achievement-status unlocked" : "achievement-status"}>
-                    {unlocked ? "Unlocked" : "Locked"}
-                  </span>
+              <div className="achievement-body">
+                <h4 className="achievement-title">{item.title}</h4>
+                <p className="achievement-desc">{item.description}</p>
+              </div>
+
+              <div className="achievement-footer">
+                <div className="achievement-progress-label">
+                  <span>Progress</span>
+                  <strong>{Math.min(item.value, item.target)} / {item.target}</strong>
                 </div>
-
-                <p>{achievement.description}</p>
-
-                <div className="achievement-progress">
-                  <div style={{ width: `${progress}%` }}></div>
+                <div className="achievement-progress-track">
+                  <div
+                    className="achievement-progress-fill"
+                    style={{ width: `${progressPct}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -156,4 +194,3 @@ function Achievements() {
 }
 
 export default Achievements;
-

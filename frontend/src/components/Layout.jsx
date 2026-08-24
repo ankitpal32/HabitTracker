@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FiHome,
   FiBarChart2,
@@ -9,14 +9,16 @@ import {
   FiLogOut,
   FiBell,
   FiMenu,
-  FiX
+  FiX,
+  FiChevronDown
 } from "react-icons/fi";
 import { FaTrophy } from "react-icons/fa";
 import logo from "../images/logo.png";
 
 function Layout({ children }) {
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [user, setUser] = useState(() => {
@@ -26,6 +28,7 @@ function Layout({ children }) {
       return null;
     }
   });
+
   const [avatar, setAvatar] = useState(
     () => localStorage.getItem("profileImage") || ""
   );
@@ -44,18 +47,11 @@ function Layout({ children }) {
     return () => window.removeEventListener("userUpdated", handleUserUpdate);
   }, []);
 
-  /* Determine topbar context */
-  const getContextName = () => {
-    const path = window.location.pathname;
-    if (path.startsWith("/dashboard")) return "Overview";
-    if (path.startsWith("/progress")) return "Insights";
-    if (path.startsWith("/history")) return "History";
-    if (path.startsWith("/achievements")) return "Milestones";
-    if (path.startsWith("/profile")) return "Profile";
-    if (path.startsWith("/settings")) return "Settings";
-    return "";
-  };
-  const contextName = getContextName();
+  /* Close mobile menu on route change */
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setDropdownOpen(false);
+  }, [location.pathname]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -64,139 +60,229 @@ function Layout({ children }) {
   };
 
   return (
-    <div className="app-layout">
-      {menuOpen && (
-        <div
-          className="sidebar-backdrop"
-          onClick={() => setMenuOpen(false)}
-        ></div>
-      )}
+    <div className="app-shell">
+      {/* Top Navbar */}
+      <header className="top-navbar">
+        <div className="navbar-inner-container">
+          
+          {/* Left: Brand Logo & Wordmark */}
+          <Link to="/dashboard" className="navbar-brand-link">
+            <img src={logo} alt="HabitTrack Logo" className="navbar-logo-img" />
+            <span className="navbar-brand-name">HabitTrack</span>
+          </Link>
 
-      {/* Sidebar Navigation */}
-      <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
-        <div className="sidebar-logo">
-          <img src={logo} alt="Logo" className="logo-img" />
-          <div>
-            <h2>HabitTrack</h2>
-            <span>Stay consistent</span>
-          </div>
-          <button
-            className="sidebar-close"
-            onClick={() => setMenuOpen(false)}
-            aria-label="Close menu"
-          >
-            <FiX />
-          </button>
-        </div>
-
-        <nav className="sidebar-nav">
-          <NavLink to="/dashboard" onClick={() => setMenuOpen(false)}>
-            <FiHome />
-            Overview
-          </NavLink>
-
-          <NavLink to="/progress" onClick={() => setMenuOpen(false)}>
-            <FiBarChart2 />
-            Progress
-          </NavLink>
-
-          <NavLink to="/history" onClick={() => setMenuOpen(false)}>
-            <FiClock />
-            History
-          </NavLink>
-
-          <NavLink to="/achievements" onClick={() => setMenuOpen(false)}>
-            <FaTrophy />
-            Achievements
-          </NavLink>
-
-          <NavLink to="/profile" onClick={() => setMenuOpen(false)}>
-            <FiUser />
-            Profile
-          </NavLink>
-
-          <NavLink to="/settings" onClick={() => setMenuOpen(false)}>
-            <FiSettings />
-            Settings
-          </NavLink>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <div className="user-box">
-            <div className="user-avatar">
-              {avatar ? (
-                <img src={avatar} alt="Avatar" />
-              ) : (
-                user?.name?.charAt(0).toUpperCase() || "U"
-              )}
-            </div>
-            <div className="user-info">
-              <strong>{user?.name || "User"}</strong>
-              <span>{user?.email || ""}</span>
-            </div>
-          </div>
-
-          <button className="sidebar-logout" onClick={logout}>
-            <FiLogOut />
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="main-area">
-        <header className="topbar">
-          <div className="topbar-container">
-            <button
-              className="menu-button"
-              onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
+          {/* Center: Horizontal Navigation Links (Desktop) */}
+          <nav className="desktop-navbar-nav">
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                isActive ? "nav-link-item active" : "nav-link-item"
+              }
             >
-              <FiMenu />
+              <FiHome className="nav-item-icon" />
+              <span>Dashboard</span>
+            </NavLink>
+
+            <NavLink
+              to="/progress"
+              className={({ isActive }) =>
+                isActive ? "nav-link-item active" : "nav-link-item"
+              }
+            >
+              <FiBarChart2 className="nav-item-icon" />
+              <span>Progress</span>
+            </NavLink>
+
+            <NavLink
+              to="/history"
+              className={({ isActive }) =>
+                isActive ? "nav-link-item active" : "nav-link-item"
+              }
+            >
+              <FiClock className="nav-item-icon" />
+              <span>History</span>
+            </NavLink>
+
+            <NavLink
+              to="/achievements"
+              className={({ isActive }) =>
+                isActive ? "nav-link-item active" : "nav-link-item"
+              }
+            >
+              <FaTrophy className="nav-item-icon" />
+              <span>Achievements</span>
+            </NavLink>
+
+            
+          </nav>
+
+          {/* Right: Notifications & User Profile Menu */}
+          <div className="navbar-actions-right">
+            <button
+              type="button"
+              className="navbar-icon-btn"
+              title="Notifications"
+              aria-label="Notifications"
+            >
+              <FiBell />
             </button>
 
-            <div className="mobile-logo">
-              <img src={logo} alt="Logo" className="logo-img" />
-              <strong>HabitTrack</strong>
-            </div>
-
-            <div className="topbar-left">
-              <span className="topbar-context-title">{contextName}</span>
-            </div>
-
-            <div className="topbar-right">
-              <button className="notification-button" aria-label="Notifications">
-                <FiBell />
-              </button>
-
-              <div
-                className="topbar-user"
+            {/* User Dropdown */}
+            <div className="navbar-user-dropdown-wrap">
+              <button
+                type="button"
+                className="navbar-user-trigger"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
+                aria-expanded={dropdownOpen}
               >
-                <div className="user-avatar">
+                <div className="navbar-user-avatar">
                   {avatar ? (
-                    <img src={avatar} alt="Avatar" />
+                    <img src={avatar} alt="User avatar" />
                   ) : (
                     user?.name?.charAt(0).toUpperCase() || "U"
                   )}
                 </div>
-                <span className="user-name">{user?.name || "User"}</span>
-                <span className="caret-indicator">▼</span>
+                <span className="navbar-user-name">{user?.name || "User"}</span>
+                <FiChevronDown className="navbar-chevron-icon" />
+              </button>
 
-                {dropdownOpen && (
-                  <div className="topbar-dropdown">
-                    <NavLink to="/profile" onClick={() => setDropdownOpen(false)}>Profile</NavLink>
-                    <NavLink to="/settings" onClick={() => setDropdownOpen(false)}>Settings</NavLink>
-                    <button onClick={logout} className="dropdown-logout-btn">Logout</button>
+              {dropdownOpen && (
+                <>
+                  <div
+                    className="dropdown-overlay"
+                    onClick={() => setDropdownOpen(false)}
+                  />
+                  <div className="navbar-dropdown-panel">
+                    <NavLink
+                      to="/profile"
+                      className="dropdown-menu-link"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <FiUser /> Profile
+                    </NavLink>
+                    <NavLink
+                      to="/settings"
+                      className="dropdown-menu-link"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      <FiSettings /> Settings
+                    </NavLink>
+                    <div className="dropdown-divider-line" />
+                    <button
+                      type="button"
+                      className="dropdown-menu-link danger"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        logout();
+                      }}
+                    >
+                      <FiLogOut /> Logout
+                    </button>
                   </div>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Hamburger Menu Toggle */}
+            <button
+              type="button"
+              className="navbar-mobile-toggle"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <FiX /> : <FiMenu />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Dropdown Panel */}
+        {mobileMenuOpen && (
+          <div className="mobile-nav-panel">
+            <div className="mobile-user-banner">
+              <div className="navbar-user-avatar">
+                {avatar ? (
+                  <img src={avatar} alt="User avatar" />
+                ) : (
+                  user?.name?.charAt(0).toUpperCase() || "U"
                 )}
               </div>
+              <div className="mobile-user-details">
+                <strong>{user?.name || "User"}</strong>
+                <span>{user?.email || ""}</span>
+              </div>
             </div>
-          </div>
-        </header>
 
-        <main className="page-content">{children}</main>
-      </div>
+            <nav className="mobile-nav-list">
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                }
+              >
+                <FiHome /> Dashboard
+              </NavLink>
+
+              <NavLink
+                to="/progress"
+                className={({ isActive }) =>
+                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                }
+              >
+                <FiBarChart2 /> Progress
+              </NavLink>
+
+              <NavLink
+                to="/history"
+                className={({ isActive }) =>
+                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                }
+              >
+                <FiClock /> History
+              </NavLink>
+
+              <NavLink
+                to="/achievements"
+                className={({ isActive }) =>
+                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                }
+              >
+                <FaTrophy /> Achievements
+              </NavLink>
+
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                }
+              >
+                <FiUser /> Profile
+              </NavLink>
+
+              <NavLink
+                to="/settings"
+                className={({ isActive }) =>
+                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                }
+              >
+                <FiSettings /> Settings
+              </NavLink>
+
+              <div className="mobile-nav-divider" />
+
+              <button
+                type="button"
+                className="mobile-nav-link logout-btn"
+                onClick={logout}
+              >
+                <FiLogOut /> Logout
+              </button>
+            </nav>
+          </div>
+        )}
+      </header>
+
+      {/* Main Content Area */}
+      <main className="app-content-body">{children}</main>
     </div>
   );
 }

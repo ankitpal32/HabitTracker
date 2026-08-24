@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiClock, FiTrash2, FiBell, FiLogOut } from "react-icons/fi";
+import { FiClock, FiTrash2, FiBell, FiMoon, FiLogOut, FiCheck } from "react-icons/fi";
 
 function Settings() {
   const navigate = useNavigate();
   const [defaultFrequency, setDefaultFrequency] = useState(
-    localStorage.getItem("defaultFrequency") || "Daily"
+    () => localStorage.getItem("defaultFrequency") || "Daily"
   );
   const [confirmDelete, setConfirmDelete] = useState(
-    localStorage.getItem("confirmDelete") !== "false"
+    () => localStorage.getItem("confirmDelete") !== "false"
   );
   const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("darkMode") === "true"
+    () => localStorage.getItem("darkMode") === "true"
   );
   const [notifications, setNotifications] = useState(
-    localStorage.getItem("notifications") !== "false"
+    () => localStorage.getItem("notifications") !== "false"
   );
   const [saved, setSaved] = useState(false);
 
+  /* Indicator flash */
   const triggerSaved = () => {
     setSaved(false);
     setTimeout(() => {
@@ -28,8 +29,8 @@ function Settings() {
     }, 10);
   };
 
-  const handleFrequencyChange = (event) => {
-    const value = event.target.value;
+  const handleFrequencyChange = (e) => {
+    const value = e.target.value;
     setDefaultFrequency(value);
     localStorage.setItem("defaultFrequency", value);
     triggerSaved();
@@ -65,129 +66,151 @@ function Settings() {
   };
 
   return (
-    <div className="settings-page">
-      <div className="page-heading">
-        <div>
-          <p className="page-label">SETTINGS</p>
-          <h1>Settings</h1>
-          <p>Configure your habit tracking preferences.</p>
+    <div className="settings-view">
+      {/* Page Header */}
+      <section className="view-header">
+        <div className="header-meta-row">
+          <div className="header-meta">
+            <span className="page-pretitle">PREFERENCES</span>
+            <h1 className="page-title">Settings</h1>
+            <p className="page-subtitle">
+              Keep HabitTrack simple and configured for you.
+            </p>
+          </div>
+
+          {saved && (
+            <span className="settings-saved-pill">
+              <FiCheck /> Saved
+            </span>
+          )}
+        </div>
+      </section>
+
+      {/* Habit Preferences Section */}
+      <section className="dashboard-section settings-group-section">
+        <div className="section-header-compact">
+          <div className="section-title-wrap">
+            <span className="section-pretitle">GENERAL</span>
+            <h3 className="section-title">Habit Preferences</h3>
+            <p className="section-subtitle">Choose how your habits behave.</p>
+          </div>
         </div>
 
-        {saved && <span className="settings-saved">✓ Saved</span>}
-      </div>
-
-      <section className="settings-section">
-        <div className="settings-section-heading">
-          <h2>Habit Preferences</h2>
-          <p>Choose how your habits behave.</p>
-        </div>
-
-        <div className="settings-list">
-          <div className="setting-card">
+        <div className="settings-rows-card">
+          <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon"><FiClock /></div>
-              <div>
-                <h3>Default Frequency</h3>
-                <p>Used when you create a new habit.</p>
+              <div className="setting-icon-box"><FiClock /></div>
+              <div className="setting-text">
+                <strong>Default Frequency</strong>
+                <p>Pre-selected frequency when creating new habits.</p>
               </div>
             </div>
-
             <select
-              className="settings-select"
               value={defaultFrequency}
               onChange={handleFrequencyChange}
+              className="settings-select-field"
             >
               <option value="Daily">Daily</option>
               <option value="Weekly">Weekly</option>
             </select>
           </div>
 
-          <div className="setting-card">
+          <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon"><FiTrash2 /></div>
-              <div>
-                <h3>Confirm Before Delete</h3>
-                <p>Ask before removing a habit.</p>
+              <div className="setting-icon-box"><FiTrash2 /></div>
+              <div className="setting-text">
+                <strong>Confirm Before Delete</strong>
+                <p>Display confirmation prompt before removing a habit.</p>
               </div>
             </div>
-
             <button
               type="button"
-              className={confirmDelete ? "toggle-button active" : "toggle-button"}
+              className={`toggle-switch-btn ${confirmDelete ? "active" : ""}`}
               onClick={handleConfirmDeleteToggle}
               aria-label="Toggle delete confirmation"
             >
-              <span></span>
+              <span className="toggle-thumb" />
             </button>
           </div>
 
-          <div className="setting-card">
+          <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon">🌓</div>
-              <div>
-                <h3>Dark Mode</h3>
-                <p>Toggle dark or light color theme.</p>
+              <div className="setting-icon-box"><FiMoon /></div>
+              <div className="setting-text">
+                <strong>Dark Theme</strong>
+                <p>Toggle deep dark color palette for late night sessions.</p>
               </div>
             </div>
-
             <button
               type="button"
-              className={darkMode ? "toggle-button active" : "toggle-button"}
+              className={`toggle-switch-btn ${darkMode ? "active" : ""}`}
               onClick={handleDarkModeToggle}
               aria-label="Toggle dark mode"
             >
-              <span></span>
+              <span className="toggle-thumb" />
             </button>
           </div>
         </div>
       </section>
 
-      <section className="settings-section">
-        <div className="settings-section-heading">
-          <h2>Notifications</h2>
-          <p>Choose whether habit reminders stay enabled.</p>
+      {/* Notifications Section */}
+      <section className="dashboard-section settings-group-section">
+        <div className="section-header-compact">
+          <div className="section-title-wrap">
+            <span className="section-pretitle">ALERTS</span>
+            <h3 className="section-title">Notifications</h3>
+            <p className="section-subtitle">Manage your alerts and habit reminders.</p>
+          </div>
         </div>
 
-        <div className="settings-list">
-          <div className="setting-card">
+        <div className="settings-rows-card">
+          <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon"><FiBell /></div>
-              <div>
-                <h3>Habit Reminders</h3>
-                <p>Keep reminder preferences enabled.</p>
+              <div className="setting-icon-box"><FiBell /></div>
+              <div className="setting-text">
+                <strong>Habit Reminders</strong>
+                <p>Enable visual reminder notifications and alerts.</p>
               </div>
             </div>
-
             <button
               type="button"
-              className={notifications ? "toggle-button active" : "toggle-button"}
+              className={`toggle-switch-btn ${notifications ? "active" : ""}`}
               onClick={handleNotificationsToggle}
               aria-label="Toggle habit reminders"
             >
-              <span></span>
+              <span className="toggle-thumb" />
             </button>
           </div>
         </div>
       </section>
 
-      <section className="settings-section">
-        <div className="settings-section-heading">
-          <h2>Account</h2>
-          <p>Manage your current session.</p>
+      {/* Account Section */}
+      <section className="dashboard-section settings-group-section">
+        <div className="section-header-compact">
+          <div className="section-title-wrap">
+            <span className="section-pretitle">SESSION</span>
+            <h3 className="section-title">Account Session</h3>
+            <p className="section-subtitle">Manage your active session and sign out.</p>
+          </div>
         </div>
 
-        <div className="setting-card">
-          <div className="setting-info">
-            <div className="setting-icon danger"><FiLogOut /></div>
-            <div>
-              <h3>Sign out</h3>
-              <p>Log out of your HabitTrack account.</p>
+        <div className="settings-rows-card">
+          <div className="setting-row">
+            <div className="setting-info">
+              <div className="setting-icon-box danger"><FiLogOut /></div>
+              <div className="setting-text">
+                <strong>Sign Out</strong>
+                <p>Safely log out of your current HabitTrack session.</p>
+              </div>
             </div>
+            <button
+              type="button"
+              className="btn-danger-outline"
+              onClick={logout}
+            >
+              Logout
+            </button>
           </div>
-
-          <button type="button" className="logout-button" onClick={logout}>
-            Logout
-          </button>
         </div>
       </section>
     </div>
@@ -195,4 +218,3 @@ function Settings() {
 }
 
 export default Settings;
-

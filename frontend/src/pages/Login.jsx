@@ -13,13 +13,14 @@ function Login() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  /* Login user */
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
     setSuccess("");
 
     if (!email.trim() || !password) {
-      setError("Please fill all fields.");
+      setError("Please enter both email and password.");
       return;
     }
 
@@ -49,35 +50,37 @@ function Login() {
   };
 
   return (
-    <div className="auth-page">
-      <Link to="/" className="auth-back-btn">
+    <div className="auth-viewport">
+      <Link to="/" className="auth-back-nav">
         <FiArrowLeft /> Back to Home
       </Link>
 
-      <div className="auth-card">
-        <div className="auth-header">
-          <img src={logo} alt="Logo" className="logo-img" style={{ width: 44, height: 44 }} />
-          <h1>Welcome back</h1>
-          <p>Login to resume your streaks and build healthy daily routines.</p>
+      <div className="auth-card-box">
+        <div className="auth-brand-header">
+          <img src={logo} alt="HabitTrack Logo" className="auth-brand-logo" />
+          <h1 className="auth-heading">Welcome back</h1>
+          <p className="auth-description">
+            Sign in to continue your habit streaks and routines.
+          </p>
         </div>
 
         {error && (
-          <div className="auth-message error">
-            <FiAlertCircle size={16} />
+          <div className="auth-inline-alert error">
+            <FiAlertCircle />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="auth-message success">
-            <FiCheckCircle size={16} />
+          <div className="auth-inline-alert success">
+            <FiCheckCircle />
             <span>{success}</span>
           </div>
         )}
 
-        <form onSubmit={handleLogin}>
-          <label>
-            <span>Email Address</span>
+        <form onSubmit={handleLogin} className="auth-form-body">
+          <div className="form-group">
+            <label>Email Address</label>
             <input
               type="email"
               placeholder="you@example.com"
@@ -87,12 +90,13 @@ function Login() {
                 setError("");
               }}
               disabled={loading}
+              autoComplete="email"
             />
-          </label>
+          </div>
 
-          <label>
-            <span>Password</span>
-            <div className="password-input" style={{ position: "relative" }}>
+          <div className="form-group">
+            <label>Password</label>
+            <div className="password-input-wrapper">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
@@ -102,43 +106,29 @@ function Login() {
                   setError("");
                 }}
                 disabled={loading}
-                style={{ paddingRight: "44px" }}
+                autoComplete="current-password"
               />
-
               <button
                 type="button"
-                className="password-toggle"
+                className="password-toggle-trigger"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                style={{
-                  position: "absolute",
-                  right: "12px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "var(--muted)"
-                }}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
-          </label>
+          </div>
 
           <button
             type="submit"
-            className="primary-button"
+            className="btn-primary auth-submit-btn"
             disabled={loading}
-            style={{ width: "100%", height: 42, display: "flex", alignItems: "center", justifyContent: "center" }}
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
-        <p className="auth-link">
+        <p className="auth-bottom-text">
           Don't have an account? <Link to="/register">Create one</Link>
         </p>
       </div>

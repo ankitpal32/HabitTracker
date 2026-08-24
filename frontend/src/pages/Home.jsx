@@ -1,299 +1,390 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  FiCheckCircle,
+  FiCheck,
   FiZap,
   FiTrendingUp,
   FiLayers,
-  FiCalendar,
-  FiActivity,
-  FiSmile,
+  FiCode,
   FiBookOpen,
-  FiCompass
+  FiActivity,
+  FiClock,
+  FiAward,
+  FiBell,
+  FiArrowRight,
+  FiMenu,
+  FiX,
+  FiGithub,
+  FiLinkedin
 } from "react-icons/fi";
 import logo from "../images/logo.png";
 
 function Home() {
-  const [demoHabits, setDemoHabits] = useState([
-    { id: 1, name: "Coding Practice", completed: false, icon: <FiActivity />, frequency: "Daily" },
-    { id: 2, name: "Reading", completed: true, icon: <FiBookOpen />, frequency: "Daily" },
-    { id: 3, name: "Exercise", completed: false, icon: <FiZap />, frequency: "Weekly" },
-    { id: 4, name: "Water Intake", completed: true, icon: <FiCompass />, frequency: "Daily" }
-  ]);
-
-  const toggleDemoHabit = (id) => {
-    setDemoHabits((prev) =>
-      prev.map((habit) =>
-        habit.id === id ? { ...habit, completed: !habit.completed } : habit
-      )
-    );
-  };
-
-  const totalDemo = demoHabits.length;
-  const completedDemo = demoHabits.filter((h) => h.completed).length;
-  const progressPercent = Math.round((completedDemo / totalDemo) * 100);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="home-page">
-      <nav className="home-nav">
-        <div className="home-logo" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src={logo} alt="Logo" className="logo-img" style={{ width: 32, height: 32 }} />
-          <h2 style={{ margin: 0, fontSize: 21, letterSpacing: "-0.4px" }}>HabitTrack</h2>
-        </div>
-
-        <div>
-          <Link to="/login" style={{ color: "var(--muted)", textDecoration: "none", fontWeight: 600, fontSize: 14 }}>
-            Login
+    <div className="home-view">
+      {/* Header */}
+      <header className="home-navbar">
+        <div className="home-nav-container">
+          <Link to="/" className="home-brand">
+            <img src={logo} alt="HabitTrack Logo" className="home-brand-logo" />
+            <span className="home-brand-name">HabitTrack</span>
           </Link>
-          <Link
-            to="/register"
-            style={{
-              background: "var(--primary)",
-              color: "#fff",
-              padding: "10px 18px",
-              borderRadius: "8px",
-              textDecoration: "none",
-              fontWeight: 600,
-              fontSize: 14,
-              marginLeft: 14,
-              transition: "background 0.2s"
-            }}
-          >
-            Get Started
-          </Link>
-        </div>
-      </nav>
 
-      <main className="hero">
-        <div className="hero-content">
-          <p className="small-heading" style={{ color: "var(--primary)", fontWeight: 800 }}>
-            BUILD BETTER HABITS
-          </p>
-          <h1>
-            Small habits.
-            <br />
-            Big changes.
-          </h1>
-          <p className="hero-text">
-            Track the habits that matter, build your streak, and see your progress one day at a time.
-          </p>
-
-          <div className="hero-buttons">
-            <Link
-              to="/register"
-              className="primary-button"
-              style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-            >
-              Start Tracking
+          <div className="home-nav-links desktop-nav">
+            <Link to="/login" className="home-nav-link">
+              Login
             </Link>
+            <Link to="/register" className="btn-primary home-nav-cta">
+              Start Your First Habit
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            className="home-mobile-toggle"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <FiX /> : <FiMenu />}
+          </button>
+        </div>
+
+        {mobileMenuOpen && (
+          <div className="home-mobile-dropdown">
             <Link
               to="/login"
-              className="secondary-button"
-              style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+              className="home-mobile-link"
+              onClick={() => setMobileMenuOpen(false)}
             >
               Login
             </Link>
+            <Link
+              to="/register"
+              className="btn-primary home-mobile-cta"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Start Your First Habit
+            </Link>
           </div>
-        </div>
+        )}
+      </header>
 
-        <div className="hero-card" style={{ maxWidth: 440 }}>
-          <div className="preview-header" style={{ marginBottom: 16 }}>
-            <span className="preview-badge" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-              <FiActivity size={10} /> Live Simulator
+      {/* Hero */}
+      <section className="home-hero-section">
+        <div className="hero-grid-layout">
+          <div className="hero-text-content">
+            <span className="hero-badge">BUILD A ROUTINE THAT LASTS</span>
+            <h1 className="hero-main-title">
+              Build habits you can actually keep.
+            </h1>
+            <p className="hero-lead-text">
+              Keep your daily habits simple, stay consistent, and see your progress grow one day at a time.
+            </p>
+
+            <div className="hero-cta-group">
+              <Link to="/register" className="btn-primary hero-btn-main">
+                Start Your First Habit <FiArrowRight />
+              </Link>
+              <Link to="/login" className="btn-secondary hero-btn-sub">
+                Sign In
+              </Link>
+            </div>
+
+            <span className="hero-subnote">
+              Start with one habit. Build from there.
             </span>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>Today's Routine</span>
-              <span style={{ color: "var(--orange)", fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", gap: 4 }}>
-                <FiZap /> 7 Day Streak
-              </span>
-            </div>
           </div>
 
-          <div style={{ background: "var(--surface-soft)", padding: 14, borderRadius: 12, border: "1px solid var(--border)", marginBottom: 16 }}>
-            <div className="preview-progress-label">
-              <span>Today's Progress</span>
-              <strong>{progressPercent}%</strong>
-            </div>
-            <div className="preview-progress-bar" style={{ height: 6 }}>
-              <div className="preview-progress-bar-fill" style={{ width: `${progressPercent}%`, transition: "width 0.3s ease" }}></div>
-            </div>
-            <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 6, fontWeight: 600 }}>
-              {completedDemo} of {totalDemo} completed
-            </div>
-          </div>
-
-          <div>
-            {demoHabits.map((habit) => (
-              <div
-                key={habit.id}
-                onClick={() => toggleDemoHabit(habit.id)}
-                className="preview-habit-row"
-                style={{
-                  cursor: "pointer",
-                  userSelect: "none",
-                  borderLeft: habit.completed ? "3px solid var(--green)" : "3px solid var(--border)"
-                }}
-              >
-                <div className="preview-habit-info">
-                  <span>{habit.icon}</span>
-                  <div>
-                    <div style={{ color: habit.completed ? "var(--muted)" : "var(--text)", textDecoration: habit.completed ? "line-through" : "none" }}>
-                      {habit.name}
-                    </div>
-                    <div style={{ fontSize: 10, color: "var(--muted)" }}>{habit.frequency}</div>
-                  </div>
+          <div className="hero-preview-wrapper">
+            <div className="preview-card-frame">
+              <div className="preview-card-header">
+                <div className="preview-header-meta">
+                  <span className="preview-pretitle">HabitTrack</span>
+                  <h3 className="preview-heading">Today's Routine</h3>
                 </div>
-
-                <div className="preview-habit-action">
-                  {habit.completed ? (
-                    <FiCheckCircle style={{ color: "var(--green)" }} />
-                  ) : (
-                    <span style={{ color: "var(--border)", fontSize: 18 }}>○</span>
-                  )}
+                <div className="preview-streak-pill">
+                  <FiZap /> 7 Day Streak
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </main>
 
-      <section className="bento-section">
-        <div style={{ textAlign: "center", marginBottom: 30 }}>
-          <p className="page-label" style={{ color: "var(--primary)" }}>FEATURES</p>
-          <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.8px", margin: "4px 0" }}>Designed for Consistency</h2>
-        </div>
+              <div className="preview-habits-list">
+                <div className="preview-habit-row done">
+                  <div className="preview-row-left">
+                    <div className="preview-icon-box violet">
+                      <FiCode />
+                    </div>
+                    <div className="preview-row-meta">
+                      <strong className="preview-row-title">Coding Practice</strong>
+                      <span className="preview-row-sub">Daily &bull; 7 day streak</span>
+                    </div>
+                  </div>
+                  <span className="preview-status-check done">
+                    <FiCheck />
+                  </span>
+                </div>
 
-        <div className="bento-grid">
-          <div className="bento-card wide">
-            <div className="bento-card-icon">
-              <FiLayers />
-            </div>
-            <div>
-              <h3>Track Habits</h3>
-              <p>Keep your daily routine organized. Create custom habits, set frequencies, and monitor your commitments easily in one place.</p>
-            </div>
-          </div>
+                <div className="preview-habit-row done">
+                  <div className="preview-row-left">
+                    <div className="preview-icon-box green">
+                      <FiBookOpen />
+                    </div>
+                    <div className="preview-row-meta">
+                      <strong className="preview-row-title">Reading</strong>
+                      <span className="preview-row-sub">Daily &bull; 4 day streak</span>
+                    </div>
+                  </div>
+                  <span className="preview-status-check done">
+                    <FiCheck />
+                  </span>
+                </div>
 
-          <div className="bento-card">
-            <div className="bento-card-icon" style={{ background: "var(--orange-soft)", color: "var(--orange)" }}>
-              <FiZap />
-            </div>
-            <div>
-              <h3>Build Streaks</h3>
-              <p>Stay consistent. Watch your streak count grow day-by-day and get motivated to keep showing up.</p>
-            </div>
-          </div>
+                <div className="preview-habit-row pending">
+                  <div className="preview-row-left">
+                    <div className="preview-icon-box orange">
+                      <FiActivity />
+                    </div>
+                    <div className="preview-row-meta">
+                      <strong className="preview-row-title">Exercise</strong>
+                      <span className="preview-row-sub">Weekly &bull; 2 day streak</span>
+                    </div>
+                  </div>
+                  <span className="preview-status-check pending" />
+                </div>
+              </div>
 
-          <div className="bento-card">
-            <div className="bento-card-icon" style={{ background: "var(--secondary-soft)", color: "var(--secondary)" }}>
-              <FiTrendingUp />
+              <div className="preview-progress-block">
+                <div className="preview-progress-meta">
+                  <span>Today's Progress</span>
+                  <strong>75%</strong>
+                </div>
+                <div className="preview-bar-track">
+                  <div className="preview-bar-fill" style={{ width: "75%" }} />
+                </div>
+              </div>
             </div>
-            <div>
-              <h3>See Progress</h3>
-              <p>Analyze performance. Clean charts and timeline historical completion grids help you visualize improvements.</p>
-            </div>
-          </div>
-
-          <div className="bento-card wide">
-            <div className="bento-card-icon">
-              <FiCalendar />
-            </div>
-            <div>
-              <h3>Stay Consistent</h3>
-              <p>Small actions become stronger routines. Get reminders, unlock milestones, and build habit routines that stand the test of time.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="homepage-stats">
-        <div className="homepage-stat-card">
-          <h4>HABITS TRACKED</h4>
-          <strong>15,000+</strong>
-        </div>
-        <div className="homepage-stat-card" style={{ borderLeft: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>
-          <h4>DAILY PROGRESS</h4>
-          <strong>84% avg</strong>
-        </div>
-        <div className="homepage-stat-card">
-          <h4>CURRENT STREAK</h4>
-          <strong>18 days</strong>
-        </div>
-      </section>
-
-      <section className="steps-section" style={{ borderTop: "1px solid var(--border)", paddingTop: 60 }}>
-        <p className="page-label" style={{ color: "var(--primary)" }}>STEPS</p>
-        <h2 style={{ fontSize: 28, fontWeight: 800, letterSpacing: "-0.8px", margin: "4px 0" }}>Simple. Habitual. Actionable.</h2>
-
-        <div className="steps-grid">
-          <div className="step-card">
-            <span className="step-num">01</span>
-            <div className="step-icon">
-              <FiLayers />
-            </div>
-            <h3>Choose a habit</h3>
-            <p>Pick something simple that matters to you. Define whether you want to track it daily or weekly.</p>
-          </div>
-
-          <div className="step-card">
-            <span className="step-num">02</span>
-            <div className="step-icon">
-              <FiCheckCircle />
-            </div>
-            <h3>Complete it</h3>
-            <p>Mark it done when you have finished it. Celebrate the immediate win and record your streak.</p>
-          </div>
-
-          <div className="step-card">
-            <span className="step-num">03</span>
-            <div className="step-icon" style={{ color: "var(--orange)" }}>
-              <FiZap />
-            </div>
-            <h3>Build the streak</h3>
-            <p>Keep showing up day-by-day. Consistency locks in the habit and powers your progress.</p>
           </div>
         </div>
       </section>
 
-      <section className="motivation-section">
-        <div className="motivation-container">
-          <div className="motivation-content">
-            <p className="page-label" style={{ color: "var(--primary)" }}>MOTIVATION</p>
-            <h2>Start small.<br />Stay consistent.</h2>
-            <p>
-              You don't need a perfect routine. You just need a routine you can keep. Progress is built on small, daily commitments that compound over time.
+      {/* About */}
+      <section className="home-about-section">
+        <div className="about-split-card">
+          <div className="about-split-left">
+            <span className="section-pretitle">WHY HABITTRACK</span>
+            <h2 className="about-headline">Why HabitTrack?</h2>
+          </div>
+
+          <div className="about-split-right">
+            <p className="about-body-text">
+              HabitTrack was created to keep everyday habit tracking simple and distraction-free. Instead of overwhelming you with complicated scoring or rigid setups, it focuses on what matters: picking a habit, checking it off each day, and building quiet momentum over time.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="home-features-section">
+        <div className="section-header-centered">
+          <span className="section-pretitle">BUILT FOR EVERYDAY USE</span>
+          <h2 className="section-headline">Everything you need to stay consistent.</h2>
+        </div>
+
+        <div className="features-bento-grid">
+          <div className="bento-feature-card prominent-card">
+            <div className="feature-card-top">
+              <div className="feature-icon-box violet">
+                <FiLayers />
+              </div>
+              <span className="bento-tag">CORE</span>
+            </div>
+            <h3 className="feature-card-title">Track Habits</h3>
+            <p className="feature-card-desc">
+              Organize daily and weekly routines in one clean view with one-click check-ins, frequency filters, and search.
             </p>
           </div>
 
-          <div className="preview-illustration" style={{ maxWidth: 360, margin: "0 auto", width: "100%" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, marginBottom: 10, fontWeight: 700 }}>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><FiSmile style={{ color: "var(--primary)" }} /> Active Habit</span>
-              <span style={{ color: "var(--orange)", display: "flex", alignItems: "center", gap: 4 }}><FiZap /> 18 Days</span>
+          <div className="bento-feature-card">
+            <div className="feature-card-top">
+              <div className="feature-icon-box orange">
+                <FiZap />
+              </div>
             </div>
-            <div className="preview-progress-bar" style={{ height: 6 }}>
-              <div className="preview-progress-bar-fill" style={{ width: "90%", background: "var(--primary)" }}></div>
+            <h3 className="feature-card-title">Build Streaks</h3>
+            <p className="feature-card-desc">
+              Stay motivated with automatic consecutive-day counters that highlight your daily follow-through.
+            </p>
+          </div>
+
+          <div className="bento-feature-card prominent-card">
+            <div className="feature-card-top">
+              <div className="feature-icon-box teal">
+                <FiTrendingUp />
+              </div>
+              <span className="bento-tag teal">ANALYTICS</span>
             </div>
-            <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 6 }}>
-              90% Consistency score
+            <h3 className="feature-card-title">See Progress</h3>
+            <p className="feature-card-desc">
+              Understand your momentum with 7-day and 30-day activity charts and per-habit completion breakdowns.
+            </p>
+          </div>
+
+          <div className="bento-feature-card">
+            <div className="feature-card-top">
+              <div className="feature-icon-box green">
+                <FiClock />
+              </div>
+            </div>
+            <h3 className="feature-card-title">View History</h3>
+            <p className="feature-card-desc">
+              Look back at all your completed habits grouped cleanly by date on a chronological timeline.
+            </p>
+          </div>
+
+          <div className="bento-feature-card">
+            <div className="feature-card-top">
+              <div className="feature-icon-box yellow">
+                <FiAward />
+              </div>
+            </div>
+            <h3 className="feature-card-title">Achievements</h3>
+            <p className="feature-card-desc">
+              Reach simple milestone badges as your consistency grows from your first check-in to longer streaks.
+            </p>
+          </div>
+
+          <div className="bento-feature-card">
+            <div className="feature-card-top">
+              <div className="feature-icon-box cyan">
+                <FiBell />
+              </div>
+            </div>
+            <h3 className="feature-card-title">Habit Reminders</h3>
+            <p className="feature-card-desc">
+              Set reminder preferences so your core habits stay top-of-mind without unnecessary noise.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Progress */}
+      <section className="home-visual-section">
+        <div className="visual-split-layout">
+          <div className="visual-text-side">
+            <span className="section-pretitle">VISUAL MOMENTUM</span>
+            <h2 className="visual-headline">Consistency you can see.</h2>
+            <p className="visual-description">
+              Small daily actions become easier to understand when your progress is right in front of you. A simple activity timeline keeps your routine tangible.
+            </p>
+          </div>
+
+          <div className="visual-preview-side">
+            <div className="visual-showcase-card">
+              <div className="visual-calendar-block">
+                <div className="visual-block-header">
+                  <span>Weekly Activity</span>
+                  <span className="visual-tag-active">7 Days Logged</span>
+                </div>
+                <div className="visual-days-row">
+                  {[
+                    { day: "MON", count: 3, done: true },
+                    { day: "TUE", count: 4, done: true },
+                    { day: "WED", count: 3, done: true },
+                    { day: "THU", count: 4, done: true },
+                    { day: "FRI", count: 2, done: true },
+                    { day: "SAT", count: 4, done: true },
+                    { day: "SUN", count: 3, done: true, isToday: true }
+                  ].map((item) => (
+                    <div
+                      key={item.day}
+                      className={`visual-day-pill ${item.done ? "active" : ""} ${
+                        item.isToday ? "today" : ""
+                      }`}
+                    >
+                      <span className="pill-day">{item.day}</span>
+                      <div className="pill-circle">{item.count}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="visual-metrics-row">
+                <div className="visual-streak-tile">
+                  <span className="tile-icon orange"><FiZap /></span>
+                  <div className="tile-details">
+                    <span className="tile-sub">Current streak</span>
+                    <strong className="tile-val">7 days</strong>
+                  </div>
+                </div>
+
+                <div className="visual-progress-tile">
+                  <div className="progress-tile-header">
+                    <span>Today's progress</span>
+                    <strong>75%</strong>
+                  </div>
+                  <div className="progress-tile-track">
+                    <div className="progress-tile-fill" style={{ width: "75%" }} />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="home-footer">
-        <div className="home-footer-container">
-          <div className="home-footer-left">
-            <img src={logo} alt="Logo" className="logo-img" style={{ width: 28, height: 28 }} />
-            <span style={{ fontSize: 16, fontWeight: 700 }}>HabitTrack</span>
+      {/* CTA */}
+      <section className="home-cta-section">
+        <div className="cta-simple-card">
+          <h2 className="cta-simple-title">Start with one habit today.</h2>
+          <p className="cta-simple-desc">
+            Keep it simple, stay consistent, and build from there.
+          </p>
+          <Link to="/register" className="btn-primary cta-simple-btn">
+            Start Your First Habit <FiArrowRight />
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="home-footer-bottom">
+        <div className="footer-container">
+          <div className="footer-left">
+            <Link to="/" className="footer-brand">
+              <img src={logo} alt="HabitTrack Logo" className="footer-logo" />
+              <span className="footer-brand-name">HabitTrack</span>
+            </Link>
+            <p className="footer-desc">
+              A simple habit tracker for everyday consistency.
+            </p>
           </div>
 
-          <p className="home-footer-text">
-            Build better habits, one day at a time.
-          </p>
+          <div className="footer-right">
+            <div className="footer-links">
+              <Link to="/login">Login</Link>
+              <Link to="/register">Register</Link>
+              <a
+                href="https://github.com/ankitpal32/HabitTracker_Ankit-Pal"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-social-link"
+              >
+                <FiGithub /> GitHub
+              </a>
+              <a
+                href="https://www.linkedin.com/in/ankitpal32"
+                target="_blank"
+                rel="noreferrer"
+                className="footer-social-link"
+              >
+                <FiLinkedin /> LinkedIn
+              </a>
+            </div>
 
-          <div className="home-footer-right">
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+            <div className="footer-credits-line">
+              <span className="footer-credit">Designed &amp; built by Ankit Pal</span>
+              <span className="footer-copy">&bull; &copy; 2026 HabitTrack</span>
+            </div>
           </div>
         </div>
       </footer>
