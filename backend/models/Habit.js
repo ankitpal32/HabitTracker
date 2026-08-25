@@ -49,7 +49,7 @@ const habitSchema = new mongoose.Schema(
   }
 );
 
-// Compound indexes for user-isolated queries and performance
+// queries and performance
 habitSchema.index({ userId: 1, createdAt: -1 });
 habitSchema.index({ userId: 1, lastCompletedDate: 1 });
 

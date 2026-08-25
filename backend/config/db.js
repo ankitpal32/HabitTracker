@@ -5,7 +5,7 @@ const connectDB = async () => {
 
   if (!uri) {
     console.error(
-      "❌ MongoDB connection error: MONGODB_URI or MONGO_URI is not defined in your environment variables (.env)."
+      "MongoDB connection error: MONGODB_URI or MONGO_URI is not defined in your environment variables (.env)."
     );
     return;
   }
@@ -17,35 +17,35 @@ const connectDB = async () => {
       maxPoolSize: 10
     });
 
-    console.log(`✅ MongoDB Atlas connected successfully: ${conn.connection.host}`);
+    console.log(`MongoDB Atlas connected successfully: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`❌ MongoDB Atlas connection failed: ${error.message}`);
+    console.error(`MongoDB Atlas connection failed: ${error.message}`);
   }
 };
 
 // Connection event listeners
 mongoose.connection.on("disconnected", () => {
-  console.warn("⚠️  MongoDB Atlas disconnected.");
+  console.warn("MongoDB Atlas disconnected.");
 });
 
 mongoose.connection.on("reconnected", () => {
-  console.log("🔄 MongoDB Atlas reconnected.");
+  console.log("MongoDB Atlas reconnected.");
 });
 
 mongoose.connection.on("error", (err) => {
-  console.error(`❌ MongoDB Atlas connection error: ${err.message}`);
+  console.error(`MongoDB Atlas connection error: ${err.message}`);
 });
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
   await mongoose.connection.close();
-  console.log("🛑 MongoDB Atlas connection closed due to app termination (SIGINT).");
+  console.log("MongoDB Atlas connection closed due to app termination (SIGINT).");
   process.exit(0);
 });
 
 process.on("SIGTERM", async () => {
   await mongoose.connection.close();
-  console.log("🛑 MongoDB Atlas connection closed due to app termination (SIGTERM).");
+  console.log("MongoDB Atlas connection closed due to app termination (SIGTERM).");
   process.exit(0);
 });
 

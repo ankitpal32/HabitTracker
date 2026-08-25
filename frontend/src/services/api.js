@@ -8,14 +8,12 @@ const api = axios.create({
   baseURL: `${API_URL}/api`
 });
 
-/**
- * Standardized user-friendly error message resolver
- */
+/* Standardized error message */
 export const getErrorMessage = (
   error,
   defaultMsg = "An unexpected error occurred. Please try again."
 ) => {
-  // Backend not reachable / network error / connection refused
+  // Backend not reachable
   if (!error || !error.response) {
     return "Unable to connect to the server. Please try again.";
   }

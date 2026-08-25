@@ -113,7 +113,7 @@ function Layout({ children }) {
             </NavLink>
           </nav>
 
-          {/* Right: Notifications & User Profile Menu */}
+          {/* Notifications & User Profile Menu */}
           <div className="navbar-actions-right">
             <button
               type="button"

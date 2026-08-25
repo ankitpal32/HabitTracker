@@ -355,16 +355,14 @@ function Home() {
               <span className="footer-brand-name">HabitTrack</span>
             </Link>
             <p className="footer-desc">
-              A simple habit tracker for everyday consistency.
+              A habit tracker for everyday consistency.
             </p>
           </div>
 
           <div className="footer-right">
             <div className="footer-links">
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
               <a
-                href="https://github.com/ankitpal32/HabitTracker_Ankit-Pal"
+                href="https://github.com/ankitpal32"
                 target="_blank"
                 rel="noreferrer"
                 className="footer-social-link"
@@ -382,7 +380,7 @@ function Home() {
             </div>
 
             <div className="footer-credits-line">
-              <span className="footer-credit">Designed &amp; built by Ankit Pal</span>
+              <span className="footer-credit">Designed &amp; Built by Ankit Pal</span>
               <span className="footer-copy">&bull; &copy; 2026 HabitTrack</span>
             </div>
           </div>

@@ -16,7 +16,7 @@ router.post("/register", registerUser);
 /* Login user */
 router.post("/login", loginUser);
 
-/* Get current authenticated user profile */
+/* get authenticated user profile */
 router.get("/me", protect, getMe);
 
 /* Update profile */

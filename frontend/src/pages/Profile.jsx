@@ -43,7 +43,7 @@ function Profile() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
 
-  /* Get habits for statistics */
+  /* habits for statistics */
   const getHabits = async () => {
     try {
       const response = await api.get("/habits");
@@ -176,7 +176,7 @@ function Profile() {
         </div>
       </section>
 
-      {/* Header Card (Compact horizontal layout) */}
+      {/* Header*/}
       <section className="profile-header-card">
         <div className="profile-header-left">
           <div className="profile-avatar-container">
@@ -235,7 +235,7 @@ function Profile() {
         </div>
       </section>
 
-      {/* 3 Equal Statistics */}
+      {/* Statistics */}
       <section className="stats-grid three-col">
         <div className="stat-card">
           <div className="stat-card-header">
@@ -265,7 +265,7 @@ function Profile() {
         </div>
       </section>
 
-      {/* Account Information Card */}
+      {/* Account Information */}
       <section className="dashboard-section account-info-section">
         <div className="section-header-compact">
           <div className="section-title-wrap">
@@ -293,7 +293,7 @@ function Profile() {
         </div>
       </section>
 
-      {/* Edit Profile Modal */}
+      {/* Edit Profile */}
       {showEdit && (
         <div
           className="modal-backdrop"
@@ -358,7 +358,7 @@ function Profile() {
         </div>
       )}
 
-      {/* Change Password Modal */}
+      {/* Change Password */}
       {showPassword && (
         <div
           className="modal-backdrop"

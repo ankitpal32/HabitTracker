@@ -1,24 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiClock, FiTrash2, FiBell, FiMoon, FiLogOut, FiCheck } from "react-icons/fi";
+import { FiClock, FiTrash2, FiMoon, FiLogOut, FiCheck } from "react-icons/fi";
 
 function Settings() {
   const navigate = useNavigate();
   const [defaultFrequency, setDefaultFrequency] = useState(
-    () => localStorage.getItem("defaultFrequency") || "Daily"
+    () => localStorage.getItem("defaultFrequency") || "Daily",
   );
   const [confirmDelete, setConfirmDelete] = useState(
-    () => localStorage.getItem("confirmDelete") !== "false"
+    () => localStorage.getItem("confirmDelete") !== "false",
   );
   const [darkMode, setDarkMode] = useState(
-    () => localStorage.getItem("darkMode") === "true"
+    () => localStorage.getItem("darkMode") === "true",
   );
-  const [notifications, setNotifications] = useState(
-    () => localStorage.getItem("notifications") !== "false"
-  );
+
   const [saved, setSaved] = useState(false);
 
-  /* Indicator flash */
   const triggerSaved = () => {
     setSaved(false);
     setTimeout(() => {
@@ -51,13 +48,6 @@ function Settings() {
     triggerSaved();
   };
 
-  const handleNotificationsToggle = () => {
-    const nextVal = !notifications;
-    setNotifications(nextVal);
-    localStorage.setItem("notifications", String(nextVal));
-    triggerSaved();
-  };
-
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -67,7 +57,7 @@ function Settings() {
 
   return (
     <div className="settings-view">
-      {/* Page Header */}
+      {/* Header */}
       <section className="view-header">
         <div className="header-meta-row">
           <div className="header-meta">
@@ -99,7 +89,9 @@ function Settings() {
         <div className="settings-rows-card">
           <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon-box"><FiClock /></div>
+              <div className="setting-icon-box">
+                <FiClock />
+              </div>
               <div className="setting-text">
                 <strong>Default Frequency</strong>
                 <p>Pre-selected frequency when creating new habits.</p>
@@ -117,7 +109,9 @@ function Settings() {
 
           <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon-box"><FiTrash2 /></div>
+              <div className="setting-icon-box">
+                <FiTrash2 />
+              </div>
               <div className="setting-text">
                 <strong>Confirm Before Delete</strong>
                 <p>Display confirmation prompt before removing a habit.</p>
@@ -135,7 +129,9 @@ function Settings() {
 
           <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon-box"><FiMoon /></div>
+              <div className="setting-icon-box">
+                <FiMoon />
+              </div>
               <div className="setting-text">
                 <strong>Dark Theme</strong>
                 <p>Toggle deep dark color palette for late night sessions.</p>
@@ -153,51 +149,24 @@ function Settings() {
         </div>
       </section>
 
-      {/* Notifications Section */}
-      <section className="dashboard-section settings-group-section">
-        <div className="section-header-compact">
-          <div className="section-title-wrap">
-            <span className="section-pretitle">ALERTS</span>
-            <h3 className="section-title">Notifications</h3>
-            <p className="section-subtitle">Manage your alerts and habit reminders.</p>
-          </div>
-        </div>
-
-        <div className="settings-rows-card">
-          <div className="setting-row">
-            <div className="setting-info">
-              <div className="setting-icon-box"><FiBell /></div>
-              <div className="setting-text">
-                <strong>Habit Reminders</strong>
-                <p>Enable visual reminder notifications and alerts.</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              className={`toggle-switch-btn ${notifications ? "active" : ""}`}
-              onClick={handleNotificationsToggle}
-              aria-label="Toggle habit reminders"
-            >
-              <span className="toggle-thumb" />
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* Account Section */}
       <section className="dashboard-section settings-group-section">
         <div className="section-header-compact">
           <div className="section-title-wrap">
             <span className="section-pretitle">SESSION</span>
             <h3 className="section-title">Account Session</h3>
-            <p className="section-subtitle">Manage your active session and sign out.</p>
+            <p className="section-subtitle">
+              Manage your active session and sign out.
+            </p>
           </div>
         </div>
 
         <div className="settings-rows-card">
           <div className="setting-row">
             <div className="setting-info">
-              <div className="setting-icon-box danger"><FiLogOut /></div>
+              <div className="setting-icon-box danger">
+                <FiLogOut />
+              </div>
               <div className="setting-text">
                 <strong>Sign Out</strong>
                 <p>Safely log out of your current HabitTrack session.</p>

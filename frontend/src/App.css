@@ -1,10 +1,3 @@
-/* ==========================================================================
-   HabitTrack Final Unified Stylesheet — Polish, Typography & Spacing
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   1. Shared UI Primitives (Buttons, Form Controls, Alerts, Badges)
-   -------------------------------------------------------------------------- */
 
 /* Buttons */
 .btn-primary {
@@ -325,10 +318,7 @@
   white-space: nowrap;
 }
 
-/* --------------------------------------------------------------------------
-   2. Horizontal Top Navbar & App Shell Layout
-   -------------------------------------------------------------------------- */
-
+/* Horizontal Top Navbar*/
 .app-shell {
   min-height: 100vh;
   display: flex;
@@ -685,10 +675,7 @@
   box-sizing: border-box;
 }
 
-/* --------------------------------------------------------------------------
-   3. Authenticated Views Spacing & Headers
-   -------------------------------------------------------------------------- */
-
+/* Authenticated Views Spacing & Headers */
 .dashboard-view,
 .progress-view,
 .history-view,
@@ -796,9 +783,20 @@
   flex-shrink: 0;
 }
 
-.stat-card-icon.violet { background-color: var(--primary-soft); color: var(--primary); }
-.stat-card-icon.green { background-color: var(--success-soft); color: var(--success); }
-.stat-card-icon.orange { background-color: var(--warning-soft); color: var(--warning); }
+.stat-card-icon.violet {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.stat-card-icon.green {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+
+.stat-card-icon.orange {
+  background-color: var(--warning-soft);
+  color: var(--warning);
+}
 
 .stat-card-value {
   font-size: clamp(22px, 3.2vw, 26px);
@@ -1215,10 +1213,7 @@
   flex-wrap: wrap;
 }
 
-/* --------------------------------------------------------------------------
-   4. Progress View Styles
-   -------------------------------------------------------------------------- */
-
+/* Progress View */
 .range-toggle-group {
   display: flex;
   background-color: var(--surface-soft);
@@ -1443,10 +1438,7 @@
   color: var(--text-muted);
 }
 
-/* --------------------------------------------------------------------------
-   5. History View Styles
-   -------------------------------------------------------------------------- */
-
+/* History View */
 .timeline-container {
   display: flex;
   flex-direction: column;
@@ -1562,10 +1554,7 @@
   flex-shrink: 0;
 }
 
-/* --------------------------------------------------------------------------
-   6. Achievements View Styles (2-Column Desktop Grid)
-   -------------------------------------------------------------------------- */
-
+/* Achievements View */
 .achievements-banner-card {
   display: flex;
   align-items: center;
@@ -1751,10 +1740,7 @@
   transition: width 0.3s ease;
 }
 
-/* --------------------------------------------------------------------------
-   7. Profile View Styles
-   -------------------------------------------------------------------------- */
-
+/* Profile View */
 .profile-header-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -1903,10 +1889,7 @@
   word-break: break-word;
 }
 
-/* --------------------------------------------------------------------------
-   8. Settings View Styles (Polished, Compact & Full Width)
-   -------------------------------------------------------------------------- */
-
+/* Settings View */
 .settings-group-section {
   display: flex;
   flex-direction: column;
@@ -2047,10 +2030,7 @@
   transform: translateX(18px);
 }
 
-/* --------------------------------------------------------------------------
-   9. Landing Page (Home View) Styles — Polished Design
-   -------------------------------------------------------------------------- */
-
+/* Landing Page */
 .home-view {
   min-height: 100vh;
   background-color: var(--background);
@@ -2060,7 +2040,7 @@
   flex-direction: column;
 }
 
-/* 1. Floating-style Header */
+/* Floating Header */
 .home-navbar {
   height: var(--navbar-height);
   min-height: var(--navbar-height);
@@ -2191,7 +2171,7 @@ body.dark-mode .home-navbar {
   text-decoration: none;
 }
 
-/* 2. Hero Section */
+/* Hero Section */
 .home-hero-section {
   padding: clamp(48px, 7vw, 72px) 24px clamp(56px, 7vw, 80px);
   max-width: 1180px;
@@ -2274,7 +2254,7 @@ body.dark-mode .home-navbar {
   color: var(--text-muted);
 }
 
-/* Product Preview with glowing background */
+/* Product Preview */
 .hero-preview-wrapper {
   position: relative;
   display: flex;
@@ -2420,9 +2400,20 @@ body.dark-mode .home-navbar {
   flex-shrink: 0;
 }
 
-.preview-icon-box.violet { background-color: var(--primary-soft); color: var(--primary); }
-.preview-icon-box.green { background-color: var(--success-soft); color: var(--success); }
-.preview-icon-box.orange { background-color: var(--warning-soft); color: var(--warning); }
+.preview-icon-box.violet {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.preview-icon-box.green {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+
+.preview-icon-box.orange {
+  background-color: var(--warning-soft);
+  color: var(--warning);
+}
 
 .preview-row-meta {
   display: flex;
@@ -2495,7 +2486,7 @@ body.dark-mode .home-navbar {
   border-radius: inherit;
 }
 
-/* Overlapping floating streak card */
+/* Overlapping streak */
 .preview-floating-streak-card {
   position: absolute;
   bottom: -18px;
@@ -2541,7 +2532,7 @@ body.dark-mode .home-navbar {
   color: var(--text-secondary);
 }
 
-/* 3. About Section (Split Layout) */
+/* About Section */
 .home-about-section {
   padding: 0 24px clamp(48px, 6vw, 64px);
   max-width: 1180px;
@@ -2599,9 +2590,17 @@ body.dark-mode .home-navbar {
   font-size: 15px;
 }
 
-.step-flow-icon.violet { color: var(--primary); }
-.step-flow-icon.green { color: var(--success); }
-.step-flow-icon.orange { color: var(--warning); }
+.step-flow-icon.violet {
+  color: var(--primary);
+}
+
+.step-flow-icon.green {
+  color: var(--success);
+}
+
+.step-flow-icon.orange {
+  color: var(--warning);
+}
 
 .step-flow-item strong {
   font-size: 13px;
@@ -2613,7 +2612,25 @@ body.dark-mode .home-navbar {
   font-size: 14px;
 }
 
-/* 4. Bento Features Section (6 Cards with 2 Prominent) */
+.about-content-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 4vw, 32px) clamp(20px, 4vw, 32px);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.about-lead-text {
+  font-size: clamp(14.5px, 2vw, 16px);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 8px 0 0 0;
+}
+
+/* Features Section */
 .home-features-section {
   padding: 0 24px clamp(60px, 7vw, 76px);
   max-width: 1180px;
@@ -2631,6 +2648,13 @@ body.dark-mode .home-navbar {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(16px, 2.5vw, 20px);
+  width: 100%;
+}
+
+.features-six-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2.5vw, 22px);
   width: 100%;
 }
 
@@ -2656,6 +2680,25 @@ body.dark-mode .home-navbar {
 .bento-feature-card.prominent-card {
   background: linear-gradient(145deg, var(--surface), var(--surface-soft));
   border-color: rgba(108, 99, 255, 0.25);
+}
+
+.feature-item-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(18px, 2.5vw, 22px);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
+}
+
+.feature-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
 }
 
 .feature-card-top {
@@ -2693,15 +2736,45 @@ body.dark-mode .home-navbar {
   margin-bottom: 4px;
 }
 
-.feature-icon-box.violet { background-color: var(--primary-soft); color: var(--primary); }
-.feature-icon-box.orange { background-color: var(--warning-soft); color: var(--warning); }
-.feature-icon-box.teal { background-color: var(--secondary-soft); color: var(--secondary); }
-.feature-icon-box.green { background-color: var(--success-soft); color: var(--success); }
-.feature-icon-box.yellow { background-color: #FFF9E6; color: #D48806; }
-.feature-icon-box.cyan { background-color: #E6F7FF; color: #096DD9; }
+.feature-icon-box.violet {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
 
-body.dark-mode .feature-icon-box.yellow { background-color: #382A1C; color: #FFD666; }
-body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0FF; }
+.feature-icon-box.orange {
+  background-color: var(--warning-soft);
+  color: var(--warning);
+}
+
+.feature-icon-box.teal {
+  background-color: var(--secondary-soft);
+  color: var(--secondary);
+}
+
+.feature-icon-box.green {
+  background-color: var(--success-soft);
+  color: var(--success);
+}
+
+.feature-icon-box.yellow {
+  background-color: #FFF9E6;
+  color: #D48806;
+}
+
+.feature-icon-box.cyan {
+  background-color: #E6F7FF;
+  color: #096DD9;
+}
+
+body.dark-mode .feature-icon-box.yellow {
+  background-color: #382A1C;
+  color: #FFD666;
+}
+
+body.dark-mode .feature-icon-box.cyan {
+  background-color: #112A45;
+  color: #69C0FF;
+}
 
 .feature-card-title {
   font-size: 16.5px;
@@ -2718,7 +2791,22 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   line-height: 1.45;
 }
 
-/* 5. Interesting Visual Section ("Consistency you can see.") */
+.feature-item-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.feature-item-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Visual Section */
 .home-visual-section {
   padding: 0 24px clamp(60px, 7vw, 76px);
   max-width: 1180px;
@@ -2945,265 +3033,6 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   border-radius: inherit;
 }
 
-/* 6. CTA */
-.home-cta-section {
-  padding: 0 24px clamp(48px, 6vw, 68px);
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.cta-simple-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  padding: clamp(32px, 5vw, 44px) 24px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.cta-simple-title {
-  font-size: clamp(22px, 3.5vw, 28px);
-  font-weight: 800;
-  color: var(--text);
-  margin: 0 0 8px 0;
-  letter-spacing: -0.02em;
-}
-
-.cta-simple-desc {
-  font-size: 14.5px;
-  color: var(--text-secondary);
-  margin: 0 0 22px 0;
-  max-width: 440px;
-  line-height: 1.5;
-}
-
-.cta-simple-btn {
-  height: 42px;
-  min-height: 42px;
-  padding: 0 24px;
-  font-size: 13.5px;
-  text-decoration: none;
-}
-
-/* 7. Clean Professional Footer with Social & Creator Credit */
-.home-footer-bottom {
-  border-top: 1px solid var(--border);
-  background-color: var(--surface);
-  padding: 24px;
-  margin-top: auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.footer-container {
-  max-width: 1180px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.footer-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 800;
-  font-size: 16px;
-  color: var(--text);
-  text-decoration: none;
-}
-
-.footer-logo {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
-
-.footer-desc {
-  font-size: 12.5px;
-  color: var(--text-muted);
-  margin: 0;
-}
-
-.footer-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  flex-wrap: wrap;
-}
-
-.footer-links a:hover {
-  color: var(--primary);
-}
-
-.footer-social-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--text-secondary);
-  text-decoration: none;
-}
-
-.footer-social-link:hover {
-  color: var(--primary);
-}
-
-.footer-credits-line {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--text-muted);
-  flex-wrap: wrap;
-}
-
-.footer-credit {
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.footer-copy {
-  color: var(--text-muted);
-}
-
-/* 3. About Section */
-.home-about-section {
-  padding: 0 24px clamp(48px, 6vw, 64px);
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.about-content-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: clamp(24px, 4vw, 32px) clamp(20px, 4vw, 32px);
-  box-shadow: var(--shadow-sm);
-  text-align: center;
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.about-lead-text {
-  font-size: clamp(14.5px, 2vw, 16px);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 8px 0 0 0;
-}
-
-/* 4. Features Section (6 Built-in Real Capabilities) */
-.home-features-section {
-  padding: 0 24px clamp(60px, 7vw, 76px);
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.section-header-centered {
-  text-align: center;
-  margin-bottom: clamp(24px, 4vw, 36px);
-}
-
-.features-six-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(16px, 2.5vw, 22px);
-  width: 100%;
-}
-
-.feature-item-card {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: clamp(18px, 2.5vw, 22px);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  min-width: 0;
-}
-
-.feature-item-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--primary);
-}
-
-.feature-icon-box {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-  margin-bottom: 4px;
-}
-
-.feature-icon-box.violet { background-color: var(--primary-soft); color: var(--primary); }
-.feature-icon-box.orange { background-color: var(--warning-soft); color: var(--warning); }
-.feature-icon-box.teal { background-color: var(--secondary-soft); color: var(--secondary); }
-.feature-icon-box.green { background-color: var(--success-soft); color: var(--success); }
-.feature-icon-box.yellow { background-color: #FFF9E6; color: #D48806; }
-.feature-icon-box.cyan { background-color: #E6F7FF; color: #096DD9; }
-
-body.dark-mode .feature-icon-box.yellow { background-color: #382A1C; color: #FFD666; }
-body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0FF; }
-
-.feature-item-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  margin: 0;
-  line-height: 1.25;
-}
-
-.feature-item-desc {
-  font-size: 13.5px;
-  color: var(--text-secondary);
-  margin: 0;
-  line-height: 1.45;
-}
-
-/* 5. Interesting Visual Section ("Consistency you can see.") */
-.home-visual-section {
-  padding: 0 24px clamp(60px, 7vw, 76px);
-  max-width: 1180px;
-  margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .visual-section-container {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -3404,13 +3233,51 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   color: var(--text-muted);
 }
 
-/* 6. Final CTA */
+/* CTA */
 .home-cta-section {
   padding: 0 24px clamp(56px, 7vw, 72px);
   max-width: 1180px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
+}
+
+.cta-simple-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: clamp(32px, 5vw, 44px) 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.cta-simple-title {
+  font-size: clamp(22px, 3.5vw, 28px);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.cta-simple-desc {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  margin: 0 0 22px 0;
+  max-width: 440px;
+  line-height: 1.5;
+}
+
+.cta-simple-btn {
+  height: 42px;
+  min-height: 42px;
+  padding: 0 24px;
+  font-size: 13.5px;
+  text-decoration: none;
 }
 
 .cta-content-card {
@@ -3449,7 +3316,7 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   text-decoration: none;
 }
 
-/* 7. Clean Professional Footer with Social & Creator Credit */
+/* Footer */
 .home-footer-bottom {
   border-top: 1px solid var(--border);
   background-color: var(--surface);
@@ -3548,10 +3415,7 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   color: var(--text-muted);
 }
 
-/* --------------------------------------------------------------------------
-   10. Authentication Pages (Login & Register)
-   -------------------------------------------------------------------------- */
-
+/* Authentication Pages (Login & Register) */
 .auth-viewport {
   min-height: 100vh;
   display: flex;
@@ -3664,9 +3528,20 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   color: var(--text-muted);
 }
 
-.strength-val.weak { color: var(--danger); font-weight: 700; }
-.strength-val.medium { color: var(--warning); font-weight: 700; }
-.strength-val.strong { color: var(--success); font-weight: 700; }
+.strength-val.weak {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.strength-val.medium {
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.strength-val.strong {
+  color: var(--success);
+  font-weight: 700;
+}
 
 .strength-bars {
   display: flex;
@@ -3681,33 +3556,50 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
   transition: background-color 0.2s ease;
 }
 
-.strength-bars .bar.active.weak { background-color: var(--danger); }
-.strength-bars .bar.active.medium { background-color: var(--warning); }
-.strength-bars .bar.active.strong { background-color: var(--success); }
+.strength-bars .bar.active.weak {
+  background-color: var(--danger);
+}
 
-/* --------------------------------------------------------------------------
-   11. Animations & Utility Helpers
-   -------------------------------------------------------------------------- */
+.strength-bars .bar.active.medium {
+  background-color: var(--warning);
+}
 
+.strength-bars .bar.active.strong {
+  background-color: var(--success);
+}
+
+/* Animations & Utility Helpers */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.96); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
-/* --------------------------------------------------------------------------
-   12. Complete Responsive Breakpoints (320px to 1024px)
-   -------------------------------------------------------------------------- */
-
+/* Responsive */
 @media (max-width: 1024px) {
   .app-content-body {
     padding: 24px 20px 40px;
@@ -3916,17 +3808,17 @@ body.dark-mode .feature-icon-box.cyan { background-color: #112A45; color: #69C0F
     gap: 10px;
   }
 
-  .setting-row > select,
+  .setting-row>select,
   .settings-select-field {
     width: 100%;
     align-self: stretch;
   }
 
-  .setting-row > .btn-danger-outline {
+  .setting-row>.btn-danger-outline {
     width: 100%;
   }
 
-  .setting-row > .toggle-switch-btn {
+  .setting-row>.toggle-switch-btn {
     align-self: flex-start;
   }
 

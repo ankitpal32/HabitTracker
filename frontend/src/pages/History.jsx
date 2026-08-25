@@ -49,14 +49,14 @@ function History() {
 
   history.sort((a, b) => new Date(`${b.date}T00:00:00`) - new Date(`${a.date}T00:00:00`));
 
-  /* Filter by search and habit name */
+  /* Filter by search and habit  */
   const filteredHistory = history.filter((item) => {
     const matchesSearch = item.habitName.toLowerCase().includes(search.toLowerCase());
     const matchesFilter = filter === "All" || item.habitName === filter;
     return matchesSearch && matchesFilter;
   });
 
-  /* Date formatting helper */
+  /* Date formatting */
   const formatDate = (dateStr) => {
     const date = new Date(`${dateStr}T00:00:00`);
     return date.toLocaleDateString("en-US", {
@@ -78,7 +78,7 @@ function History() {
     return formatDate(dateStr);
   };
 
-  /* Group history by date */
+  /* Group by date */
   const groupedHistory = {};
   filteredHistory.forEach((item) => {
     if (!groupedHistory[item.date]) groupedHistory[item.date] = [];
@@ -107,7 +107,7 @@ function History() {
         </div>
       </section>
 
-      {/* 3 Metric Cards */}
+      {/* Statistics Cards */}
       <section className="stats-grid three-col">
         <div className="stat-card">
           <div className="stat-card-header">

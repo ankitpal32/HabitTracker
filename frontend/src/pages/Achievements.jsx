@@ -43,7 +43,7 @@ function Achievements() {
       ? 0
       : Math.max(...habits.map((habit) => Number(habit.streak) || 0));
 
-  /* Exactly 6 achievements */
+  /* Achievements */
   const achievements = [
     {
       icon: <FiPlusCircle />,
@@ -119,7 +119,6 @@ function Achievements() {
   return (
     <div className="achievements-view">
 
-      {/* Page Header */}
       <section className="view-header">
         <div className="header-meta">
           <span className="page-pretitle">MILESTONES</span>
@@ -130,7 +129,7 @@ function Achievements() {
         </div>
       </section>
 
-      {/* Progress banner */}
+      {/* Progress */}
       <div className="achievements-banner-card">
         <div className="banner-icon-wrap">
           <FaTrophy />
@@ -150,7 +149,7 @@ function Achievements() {
         </div>
       </div>
 
-      {/* 6 Achievements Grid */}
+      {/* Achievements Grid */}
       <div className="achievements-grid">
         {achievements.map((item) => {
           const unlocked = isUnlocked(item);

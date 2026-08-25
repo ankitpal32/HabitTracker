@@ -118,7 +118,7 @@ function Register() {
             <label>Full Name</label>
             <input
               type="text"
-              placeholder="e.g. Alex Mercer"
+              placeholder="e.g. Ankit Pal"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -133,7 +133,7 @@ function Register() {
             <label>Email Address</label>
             <input
               type="email"
-              placeholder="you@example.com"
+              placeholder="ankit@gmail.com"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);

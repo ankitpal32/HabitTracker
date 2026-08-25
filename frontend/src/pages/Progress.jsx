@@ -39,7 +39,7 @@ function Progress() {
     return date.toISOString().split("T")[0];
   };
 
-  /* Build activity chart data */
+  /* chart data */
   const activityData = [];
   for (let i = range - 1; i >= 0; i--) {
     const dateStr = getDate(i);
@@ -152,7 +152,7 @@ function Progress() {
         </div>
       </section>
 
-      {/* Activity Timeline Chart (Wide Card) */}
+      {/* Activity Timeline Chart*/}
       <section className="dashboard-section activity-chart-section">
         <div className="section-header-compact">
           <div className="section-title-wrap">
@@ -211,7 +211,7 @@ function Progress() {
         )}
       </section>
 
-      {/* Habit Performance Section */}
+      {/* Habit Performance */}
       <section className="dashboard-section performance-section">
         <div className="section-header-compact">
           <div className="section-title-wrap">

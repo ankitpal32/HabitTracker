@@ -2,7 +2,6 @@ node_modules/
 dist/
 dist-ssr/
 
-# Environment files
 .env
 .env.local
 .env.*.local
@@ -11,7 +10,6 @@ backend/.env
 frontend/.env
 frontend/.env.local
 
-# Allow example environment templates
 !.env.example
 !backend/.env.example
 !frontend/.env.example

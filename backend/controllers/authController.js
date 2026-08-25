@@ -108,7 +108,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-/* Get current user profile */
+/* user profile */
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");

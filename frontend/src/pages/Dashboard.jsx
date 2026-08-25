@@ -68,7 +68,7 @@ function Dashboard() {
     getHabits();
   }, []);
 
-  /* Save or update habit */
+  /* Save or update */
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError("");
@@ -194,7 +194,7 @@ function Dashboard() {
 
   return (
     <div className="dashboard-view">
-      {/* 1. Compact Heading Row */}
+      {/* Compact Heading Row */}
       <section className="dashboard-header-row">
         <div className="header-meta">
           <span className="page-pretitle">OVERVIEW</span>
@@ -216,7 +216,7 @@ function Dashboard() {
         </button>
       </section>
 
-      {/* 2. Statistics Grid (4 cards) */}
+      {/* Statistics Grid (4 cards) */}
       <section className="stats-grid">
         <div className="stat-card">
           <div className="stat-card-header">
@@ -276,7 +276,7 @@ function Dashboard() {
         </div>
       </section>
 
-      {/* 3. Weekly Consistency Calendar Grid */}
+      {/* Weekly Consistency Calendar */}
       <section className="dashboard-section consistency-section">
         <div className="section-header-compact">
           <div className="section-title-wrap">
@@ -309,7 +309,7 @@ function Dashboard() {
         </div>
       </section>
 
-      {/* 4. Today's Habits List */}
+      {/* Today's Habits List */}
       <section className="dashboard-section habits-section">
         <div className="habits-toolbar">
           <div className="habits-heading-area">
@@ -455,7 +455,7 @@ function Dashboard() {
         )}
       </section>
 
-      {/* 5. Add / Edit Habit Modal */}
+      {/* Add / Edit Habit Modal */}
       {showModal && (
         <div
           className="modal-backdrop"

@@ -16,11 +16,11 @@ const getHabits = async (req, res) => {
     yesterdayObj.setDate(yesterdayObj.getDate() - 1);
     const yesterday = yesterdayObj.toISOString().split("T")[0];
 
-    // Check day transitions and update streak/today states if needed
+    // Check day transitions and update streak
     for (const habit of habits) {
       let changed = false;
 
-      // Reset completedToday if last completion was not today
+      // Reset completedToday
       if (
         habit.completedToday &&
         habit.lastCompletedDate !== today
@@ -29,7 +29,7 @@ const getHabits = async (req, res) => {
         changed = true;
       }
 
-      // Reset streak to 0 if a day was missed for daily habits
+      // Reset streak
       if (
         habit.frequency === "Daily" &&
         habit.lastCompletedDate &&
@@ -60,7 +60,7 @@ const getHabits = async (req, res) => {
   }
 };
 
-// Get one habit by ID (user isolated)
+// Get one habit by ID
 const getHabitById = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.id)) {
@@ -199,7 +199,7 @@ const deleteHabit = async (req, res) => {
   }
 };
 
-// Complete habit (updates streak and date history)
+// Complete habit
 const completeHabit = async (req, res) => {
   try {
     if (!isValidObjectId(req.params.id)) {
