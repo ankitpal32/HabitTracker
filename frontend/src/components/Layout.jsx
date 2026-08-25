@@ -113,17 +113,8 @@ function Layout({ children }) {
             </NavLink>
           </nav>
 
-          {/* Notifications & User Profile Menu */}
+          {/* User Profile Menu */}
           <div className="navbar-actions-right">
-            <button
-              type="button"
-              className="navbar-icon-btn"
-              title="Notifications"
-              aria-label="Notifications"
-            >
-              <FiBell />
-            </button>
-
             {/* User Dropdown */}
             <div className="navbar-user-dropdown-wrap">
               <button
