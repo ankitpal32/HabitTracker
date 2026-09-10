@@ -64,12 +64,16 @@ const handleHealthCheck = (req, res) => {
   res.status(isConnected ? 200 : 503).json({
     status: isConnected ? "ok" : "degraded",
     backend: "running",
-    database: isConnected ? "connected" : "disconnected"
+    database: isConnected ? "connected" : "disconnected",
+    jwtConfigured: Boolean(process.env.JWT_SECRET),
+    dbConfigured: Boolean(process.env.MONGODB_URI || process.env.MONGO_URI)
   });
 };
 
 app.get("/api/health", handleHealthCheck);
 app.get("/health", handleHealthCheck);
+app.get("/api/health/db", handleHealthCheck);
+app.get("/health/db", handleHealthCheck);
 
 // Root route
 app.get("/", (req, res) => {

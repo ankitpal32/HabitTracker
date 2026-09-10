@@ -68,7 +68,8 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      return res.status(400).json({
+      console.warn("LOGIN_AUTH: User lookup failed - no account with this email");
+      return res.status(401).json({
         message: "Invalid email or password"
       });
     }
@@ -76,8 +77,16 @@ const loginUser = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(400).json({
+      console.warn("LOGIN_AUTH: Password verification failed");
+      return res.status(401).json({
         message: "Invalid email or password"
+      });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error("LOGIN_ERROR: JWT_SECRET environment variable is missing on server");
+      return res.status(500).json({
+        message: "Authentication service temporarily unavailable. Please check server configuration."
       });
     }
 
@@ -101,7 +110,7 @@ const loginUser = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("Login error:", error.message || error);
+    console.error("LOGIN_ERROR:", error.message || error);
     res.status(500).json({
       message: "Login failed. Please try again."
     });
