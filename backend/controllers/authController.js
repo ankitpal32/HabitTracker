@@ -56,25 +56,63 @@ const registerUser = async (req, res) => {
 /* Login user */
 const loginUser = async (req, res) => {
   try {
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        message: "Request body is missing or invalid"
+      });
+    }
+
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || typeof email !== "string" || typeof password !== "string") {
       return res.status(400).json({
         message: "Please enter email and password"
       });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      return res.status(400).json({
+        message: "Please enter a valid email address"
+      });
+    }
+
     const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
-      console.warn("LOGIN_AUTH: User lookup failed - no account with this email");
+      console.warn("LOGIN_AUTH: User lookup failed - no account with email");
       return res.status(401).json({
         message: "Invalid email or password"
       });
     }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!user.password || typeof user.password !== "string") {
+      console.warn("LOGIN_AUTH: User record has no valid password hash");
+      return res.status(401).json({
+        message: "Invalid email or password"
+      });
+    }
+
+    let passwordMatch = false;
+    try {
+      if (
+        user.password.startsWith("$2a$") ||
+        user.password.startsWith("$2b$") ||
+        user.password.startsWith("$2y$")
+      ) {
+        passwordMatch = await bcrypt.compare(password, user.password);
+      } else {
+        // Fallback for legacy passwords with auto-upgrade to bcrypt hash
+        passwordMatch = password === user.password;
+        if (passwordMatch) {
+          user.password = await bcrypt.hash(password, 10);
+          await user.save();
+        }
+      }
+    } catch (bcryptErr) {
+      console.error("LOGIN_BCRYPT_ERROR:", bcryptErr.message || bcryptErr);
+      passwordMatch = false;
+    }
 
     if (!passwordMatch) {
       console.warn("LOGIN_AUTH: Password verification failed");
@@ -87,7 +125,7 @@ const loginUser = async (req, res) => {
 
     const token = jwt.sign(
       {
-        userId: user._id
+        userId: user._id.toString()
       },
       jwtSecret,
       {
@@ -95,18 +133,18 @@ const loginUser = async (req, res) => {
       }
     );
 
-    res.json({
+    return res.json({
       message: "Login successful",
       token,
       user: {
-        id: user._id,
+        id: user._id.toString(),
         name: user.name,
         email: user.email
       }
     });
   } catch (error) {
     console.error("LOGIN_ERROR:", error.message || error);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Login failed. Please try again."
     });
   }
