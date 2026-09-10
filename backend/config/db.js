@@ -1,26 +1,47 @@
 const mongoose = require("mongoose");
 
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 const connectDB = async () => {
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
+  }
+
   const uri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
   if (!uri) {
-    console.error(
-      "MongoDB connection error: MONGODB_URI or MONGO_URI is not defined in your environment variables (.env)."
+    throw new Error(
+      "MongoDB connection error: MONGODB_URI or MONGO_URI is not defined in environment variables."
     );
-    return;
+  }
+
+  if (!cached.promise) {
+    const opts = {
+      dbName: "HabitTracker",
+      serverSelectionTimeoutMS: 10000,
+      maxPoolSize: 10,
+      bufferCommands: false
+    };
+
+    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
+      console.log("MongoDB Atlas connected successfully");
+      return mongooseInstance;
+    });
   }
 
   try {
-    const conn = await mongoose.connect(uri, {
-      dbName: "HabitTracker",
-      serverSelectionTimeoutMS: 10000,
-      maxPoolSize: 10
-    });
-
-    console.log(`MongoDB Atlas connected successfully: ${conn.connection.host}`);
+    cached.conn = await cached.promise;
   } catch (error) {
+    cached.promise = null;
     console.error(`MongoDB Atlas connection failed: ${error.message}`);
+    throw error;
   }
+
+  return cached.conn;
 };
 
 // Connection event listeners
@@ -34,19 +55,6 @@ mongoose.connection.on("reconnected", () => {
 
 mongoose.connection.on("error", (err) => {
   console.error(`MongoDB Atlas connection error: ${err.message}`);
-});
-
-// Graceful shutdown
-process.on("SIGINT", async () => {
-  await mongoose.connection.close();
-  console.log("MongoDB Atlas connection closed due to app termination (SIGINT).");
-  process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-  await mongoose.connection.close();
-  console.log("MongoDB Atlas connection closed due to app termination (SIGTERM).");
-  process.exit(0);
 });
 
 module.exports = connectDB;

@@ -1,11 +1,14 @@
 import axios from "axios";
 
 /* API base URL */
-const rawUrl = (import.meta.env.VITE_API_URL || "http://localhost:3000").trim();
-export const API_URL = rawUrl.replace(/\/+$/, "").replace(/\/api$/, "");
+// In production without VITE_API_URL, use relative path ("") so requests go to /api on the same domain
+// In development without VITE_API_URL, default to http://localhost:3000
+const envUrl = (import.meta.env.VITE_API_URL || "").trim();
+const rawUrl = envUrl || (import.meta.env.DEV ? "http://localhost:3000" : "");
+export const API_URL = rawUrl ? rawUrl.replace(/\/+$/, "").replace(/\/api$/, "") : "";
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`
+  baseURL: API_URL ? `${API_URL}/api` : "/api"
 });
 
 /* Standardized error message */
