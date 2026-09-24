@@ -176,7 +176,8 @@ function Layout({ children }) {
               type="button"
               className="navbar-mobile-toggle"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle navigation menu"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <FiX /> : <FiMenu />}
             </button>
@@ -185,87 +186,102 @@ function Layout({ children }) {
 
         {/* Mobile Navigation Dropdown Panel */}
         {mobileMenuOpen && (
-          <div className="mobile-nav-panel">
-            <div className="mobile-user-banner">
-              <div className="navbar-user-avatar">
-                {avatar ? (
-                  <img src={avatar} alt="User avatar" />
-                ) : (
-                  user?.name?.charAt(0).toUpperCase() || "U"
-                )}
+          <>
+            <div
+              className="mobile-nav-backdrop"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <div className="mobile-nav-panel">
+              <div className="mobile-user-banner">
+                <div className="navbar-user-avatar">
+                  {avatar ? (
+                    <img src={avatar} alt="User avatar" />
+                  ) : (
+                    user?.name?.charAt(0).toUpperCase() || "U"
+                  )}
+                </div>
+                <div className="mobile-user-details">
+                  <strong>{user?.name || "User"}</strong>
+                  <span>{user?.email || ""}</span>
+                </div>
               </div>
-              <div className="mobile-user-details">
-                <strong>{user?.name || "User"}</strong>
-                <span>{user?.email || ""}</span>
-              </div>
+
+              <nav className="mobile-nav-list">
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FiHome className="mobile-nav-icon" /> <span>Dashboard</span>
+                </NavLink>
+
+                <NavLink
+                  to="/progress"
+                  className={({ isActive }) =>
+                    isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FiBarChart2 className="mobile-nav-icon" /> <span>Progress</span>
+                </NavLink>
+
+                <NavLink
+                  to="/history"
+                  className={({ isActive }) =>
+                    isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FiClock className="mobile-nav-icon" /> <span>History</span>
+                </NavLink>
+
+                <NavLink
+                  to="/achievements"
+                  className={({ isActive }) =>
+                    isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FaTrophy className="mobile-nav-icon" /> <span>Achievements</span>
+                </NavLink>
+
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }) =>
+                    isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FiUser className="mobile-nav-icon" /> <span>Profile</span>
+                </NavLink>
+
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) =>
+                    isActive ? "mobile-nav-link active" : "mobile-nav-link"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <FiSettings className="mobile-nav-icon" /> <span>Settings</span>
+                </NavLink>
+
+                <div className="mobile-nav-divider" />
+
+                <button
+                  type="button"
+                  className="mobile-nav-link logout-btn"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                >
+                  <FiLogOut className="mobile-nav-icon" /> <span>Logout</span>
+                </button>
+              </nav>
             </div>
-
-            <nav className="mobile-nav-list">
-              <NavLink
-                to="/dashboard"
-                className={({ isActive }) =>
-                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
-                }
-              >
-                <FiHome /> Dashboard
-              </NavLink>
-
-              <NavLink
-                to="/progress"
-                className={({ isActive }) =>
-                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
-                }
-              >
-                <FiBarChart2 /> Progress
-              </NavLink>
-
-              <NavLink
-                to="/history"
-                className={({ isActive }) =>
-                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
-                }
-              >
-                <FiClock /> History
-              </NavLink>
-
-              <NavLink
-                to="/achievements"
-                className={({ isActive }) =>
-                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
-                }
-              >
-                <FaTrophy /> Achievements
-              </NavLink>
-
-              <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
-                }
-              >
-                <FiUser /> Profile
-              </NavLink>
-
-              <NavLink
-                to="/settings"
-                className={({ isActive }) =>
-                  isActive ? "mobile-nav-link active" : "mobile-nav-link"
-                }
-              >
-                <FiSettings /> Settings
-              </NavLink>
-
-              <div className="mobile-nav-divider" />
-
-              <button
-                type="button"
-                className="mobile-nav-link logout-btn"
-                onClick={logout}
-              >
-                <FiLogOut /> Logout
-              </button>
-            </nav>
-          </div>
+          </>
         )}
       </header>
 

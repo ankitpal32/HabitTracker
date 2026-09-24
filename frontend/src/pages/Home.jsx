@@ -45,29 +45,36 @@ function Home() {
             type="button"
             className="home-mobile-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <FiX /> : <FiMenu />}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="home-mobile-dropdown">
-            <Link
-              to="/login"
-              className="home-mobile-link"
+          <>
+            <div
+              className="mobile-nav-backdrop"
               onClick={() => setMobileMenuOpen(false)}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="btn-primary home-mobile-cta"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Start Your First Habit
-            </Link>
-          </div>
+            />
+            <div className="home-mobile-dropdown">
+              <Link
+                to="/login"
+                className="home-mobile-link"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="btn-primary home-mobile-cta"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Start Your First Habit
+              </Link>
+            </div>
+          </>
         )}
       </header>
 
