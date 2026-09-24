@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api, { getErrorMessage } from "../services/api";
-import { FiEye, FiEyeOff, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiAlertCircle, FiCheckCircle, FiArrowLeft, FiZap, FiEdit3 } from "react-icons/fi";
 import logo from "../images/logo.png";
+
+const DEMO_NAME = "Demo Recruiter";
+const DEMO_EMAIL = "demo@habittrack.com";
+const DEMO_PASSWORD = "Password@123";
 
 function Register() {
   const navigate = useNavigate();
@@ -30,6 +34,15 @@ function Register() {
   };
 
   const passwordStrength = getPasswordStrength();
+
+  /* Autofill demo details */
+  const handleAutofillDemo = () => {
+    setName(DEMO_NAME);
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setConfirmPassword(DEMO_PASSWORD);
+    setError("");
+  };
 
   /* Register user */
   const handleRegister = async (event) => {
@@ -218,6 +231,31 @@ function Register() {
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+
+        <div className="auth-divider">
+          <span>or recruiter autofill</span>
+        </div>
+
+        <div className="demo-auth-box">
+          <div className="demo-auth-header">
+            <span className="demo-auth-title">
+              <FiZap /> Recruiter Quick Fill
+            </span>
+          </div>
+          <p className="demo-auth-hint">
+            Populate sample registration information with one click.
+          </p>
+          <div className="demo-auth-actions">
+            <button
+              type="button"
+              className="btn-demo-quick"
+              onClick={handleAutofillDemo}
+              disabled={loading}
+            >
+              <FiEdit3 /> Autofill Demo Details
+            </button>
+          </div>
+        </div>
 
         <p className="auth-bottom-text">
           Already have an account? <Link to="/login">Sign in</Link>

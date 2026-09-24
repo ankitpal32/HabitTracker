@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api, { getErrorMessage } from "../services/api";
-import { FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle, FiArrowLeft } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiCheckCircle, FiAlertCircle, FiArrowLeft, FiZap, FiEdit3 } from "react-icons/fi";
 import logo from "../images/logo.png";
+
+const DEMO_EMAIL = "demo@habittrack.com";
+const DEMO_PASSWORD = "Password@123";
 
 function Login() {
   const navigate = useNavigate();
@@ -13,31 +16,55 @@ function Login() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  /* Login user */
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  /* Core login execution */
+  const performLogin = async (targetEmail, targetPassword) => {
     if (loading) return;
 
     setError("");
     setSuccess("");
 
-    if (!email.trim() || !password) {
+    if (!targetEmail.trim() || !targetPassword) {
       setError("Please enter both email and password.");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await api.post("/auth/login", {
-        email: email.trim(),
-        password
-      });
+      let response;
+      try {
+        response = await api.post("/auth/login", {
+          email: targetEmail.trim(),
+          password: targetPassword
+        });
+      } catch (err) {
+        // If demo user doesn't exist in MongoDB yet, auto-register then login seamlessly
+        if (
+          targetEmail.trim().toLowerCase() === DEMO_EMAIL.toLowerCase() &&
+          (err.response?.status === 401 || err.response?.status === 400)
+        ) {
+          try {
+            await api.post("/auth/register", {
+              name: "Demo Recruiter",
+              email: DEMO_EMAIL,
+              password: DEMO_PASSWORD
+            });
+            response = await api.post("/auth/login", {
+              email: DEMO_EMAIL,
+              password: DEMO_PASSWORD
+            });
+          } catch (regErr) {
+            throw err;
+          }
+        } else {
+          throw err;
+        }
+      }
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
       window.dispatchEvent(new Event("userUpdated"));
 
-      setSuccess("Login successful! Redirecting...");
+      setSuccess("Login successful! Redirecting to dashboard...");
       setTimeout(() => {
         navigate("/dashboard");
       }, 500);
@@ -49,6 +76,26 @@ function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  /* Regular form submit */
+  const handleLogin = (event) => {
+    event.preventDefault();
+    performLogin(email, password);
+  };
+
+  /* Recruiter 1-click Demo Login */
+  const handleQuickDemoLogin = () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    performLogin(DEMO_EMAIL, DEMO_PASSWORD);
+  };
+
+  /* Recruiter Autofill Only */
+  const handleAutofill = () => {
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+    setError("");
   };
 
   return (
@@ -129,6 +176,40 @@ function Login() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <div className="auth-divider">
+          <span>or recruiter demo</span>
+        </div>
+
+        <div className="demo-auth-box">
+          <div className="demo-auth-header">
+            <span className="demo-auth-title">
+              <FiZap /> Quick Demo Access
+            </span>
+          </div>
+          <p className="demo-auth-hint">
+            One-click instant login for recruiters & reviewers to test all features.
+          </p>
+          <div className="demo-auth-actions">
+            <button
+              type="button"
+              className="btn-demo-quick"
+              onClick={handleQuickDemoLogin}
+              disabled={loading}
+            >
+              <FiZap /> {loading ? "Signing in..." : "Demo Login (1-Click)"}
+            </button>
+            <button
+              type="button"
+              className="btn-demo-fill"
+              onClick={handleAutofill}
+              disabled={loading}
+              title="Populate demo email & password into input fields"
+            >
+              <FiEdit3 /> Autofill
+            </button>
+          </div>
+        </div>
 
         <p className="auth-bottom-text">
           Don't have an account? <Link to="/register">Create one</Link>
